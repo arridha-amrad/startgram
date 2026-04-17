@@ -1,0 +1,29 @@
+{
+  "projectName": "startgram",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "pnpm",
+  "includeExamples": false,
+  "tailwind": true,
+  "addOnOptions": {
+    "drizzle": {
+      "database": "postgresql"
+    }
+  },
+  "envVarValues": {},
+  "git": true,
+  "routerOnly": false,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "biome",
+    "compiler",
+    "form",
+    "paraglide",
+    "t3env",
+    "better-auth",
+    "tanstack-query",
+    "neon",
+    "drizzle"
+  ]
+}

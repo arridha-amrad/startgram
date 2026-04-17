@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:alpine
+    container_name: startgram-container
+    restart: always
+    environment:
+      POSTGRES_USER: ari
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: startgram-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

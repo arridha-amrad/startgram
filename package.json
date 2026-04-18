@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 3000",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
@@ -38,6 +38,7 @@
     "@tanstack/router-plugin": "^1.167.22",
     "better-auth": "^1.6.5",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "1.0.0-beta.22",
     "input-otp": "^1.4.2",

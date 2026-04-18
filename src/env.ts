@@ -9,6 +9,9 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     GOOGLE_REFRESH_TOKEN: z.string().min(1),
     GOOGLE_USER: z.email(),
+    CLOUDINARY_CLOUD_NAME: z.string().min(1),
+    CLOUDINARY_KEY: z.string().min(1),
+    CLOUDINARY_SECRET: z.string().min(1),
   },
 
   /**
@@ -33,6 +36,9 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
     GOOGLE_USER: process.env.GOOGLE_USER,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_KEY: process.env.CLOUDINARY_KEY,
+    CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET,
   },
 
   /**

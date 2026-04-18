@@ -51,6 +51,11 @@ export default function VerificationForm() {
 				localStorage.removeItem("auth:email");
 				navigate({ to: "/" });
 			}
+			if (res.error) {
+				if (res.error.message) {
+					toast.error(res.error.message, { duration: 5000 });
+				}
+			}
 		} catch (err) {
 			console.log(err);
 		}

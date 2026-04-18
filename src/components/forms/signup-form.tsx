@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useRef } from "react";
 import {
@@ -14,6 +13,7 @@ import {
 } from "react-hook-form";
 import toast from "react-hot-toast";
 import { authClient } from "#/lib/auth-client";
+import { removeFile, uploadImage } from "#/lib/cloudinary.functions";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -33,17 +33,6 @@ import {
 import { Input } from "@/components/ui/input";
 import type { TSignupSchema } from "@/zod-schemas/signup-schema";
 import { signupSchema } from "@/zod-schemas/signup-schema";
-
-const testUpload = createServerFn({ method: "POST" })
-	.inputValidator((data: FormData) => data)
-	.handler(async ({ data }) => {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		const file = data.get("file") as File | null;
-		console.log({ file });
-		return {
-			success: true,
-		};
-	});
 
 export default function SignupForm() {
 	const formRef = useRef<HTMLFormElement>(null);
@@ -121,17 +110,30 @@ const Form = ({
 		email,
 		fullName,
 		username,
+		avatar,
 	}: TSignupSchema) => {
+		let uploadResult: { public_id: string; secure_url: string } | undefined;
 		try {
+			if (avatar) {
+				const formData = new FormData();
+				formData.append("file", avatar);
+				formData.append("folder-name", "startgram/avatars");
+				const res = await uploadImage({ data: formData });
+				uploadResult = res;
+			}
 			const res = await authClient.signUp.email({
 				email,
 				name: fullName,
 				password,
 				username,
+				image: uploadResult?.secure_url,
 			});
 			if (res.error) {
 				if (res.error.message) {
 					toast.error(res.error.message, { duration: 5000 });
+				}
+				if (uploadResult) {
+					await removeFile({ data: { public_id: uploadResult.public_id } });
 				}
 				return;
 			}

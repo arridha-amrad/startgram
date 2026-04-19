@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "#/components/forms/login-form";
+import { LogoIcon } from "#/components/icons/logo";
 import AuthFooter from "@/components/footers/auth-footer";
 
 export const Route = createFileRoute("/auth/login")({
@@ -12,7 +13,11 @@ function RouteComponent() {
 			<div className="grid flex-1 lg:grid-cols-2">
 				<div className="flex flex-col gap-4 p-6 md:p-10">
 					<div className="flex flex-1 items-center justify-center">
-						<div className="w-full max-w-xs">
+						<div className="w-full max-w-xs flex flex-col gap-6">
+							<div className="flex items-center justify-center gap-2 self-center font-medium">
+								<LogoIcon />
+								Startgram
+							</div>
 							<LoginForm />
 						</div>
 					</div>

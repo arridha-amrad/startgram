@@ -17,6 +17,15 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     autoSignIn: false,
+    sendResetPassword: async ({ url, user }) => {
+      void sendEmail({
+        to: user.email,
+        subject: "Reset Password",
+        html: `
+          <p>Please follow this link to reset your password: ${url}</p>
+        `,
+      })
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
@@ -26,9 +35,7 @@ export const auth = betterAuth({
       sendVerificationOnSignUp: true,
       overrideDefaultEmailVerification: true,
       async sendVerificationOTP({ email, otp, type }) {
-        if (type === "sign-in") {
-          // Send the OTP for sign in
-        } else if (type === "email-verification") {
+        if (type === "email-verification") {
           void sendEmail({
             to: email,
             subject: "Verify your email",
@@ -36,8 +43,6 @@ export const auth = betterAuth({
               <p>Your verification code is: ${otp}</p>
             `,
           })
-        } else {
-          // Send the OTP for password reset
         }
       },
     }),

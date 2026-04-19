@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import SignupForm from "#/components/forms/signup-form";
+import AuthFooter from "#/components/footers/auth-footer";
+import ForgotPasswordForm from "#/components/forms/forgot-password";
+import ResetPasswordForm from "#/components/forms/reset-password";
 import { LogoIcon } from "#/components/icons/logo";
-import AuthFooter from "@/components/footers/auth-footer";
 
-export const Route = createFileRoute("/auth/signup")({
+export const Route = createFileRoute("/auth/reset-password")({
 	component: RouteComponent,
 });
 
@@ -15,7 +16,7 @@ function RouteComponent() {
 					<LogoIcon />
 					Startgram
 				</div>
-				<SignupForm />
+				<ResetPasswordForm />
 			</div>
 			<AuthFooter />
 		</div>

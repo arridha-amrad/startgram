@@ -162,12 +162,12 @@ export function LoginForm({
 					<Field>
 						<div className="flex items-center">
 							<FieldLabel htmlFor="password">Password</FieldLabel>
-							<a
-								href="/"
+							<Link
+								to="/auth/forgot-password"
 								className="ml-auto text-sm underline-offset-4 hover:underline"
 							>
 								Forgot your password?
-							</a>
+							</Link>
 						</div>
 						<InputGroup>
 							<InputGroupInput
@@ -210,12 +210,15 @@ export function LoginForm({
 							</svg>
 							Login with GitHub
 						</Button>
-						<FieldDescription className="text-center">
+						<div className="text-center text-muted-foreground text-sm">
 							Don&apos;t have an account?{" "}
-							<Link to="/auth/signup" className="underline underline-offset-4">
+							<Link
+								to="/auth/signup"
+								className="ml-auto underline-offset-4 hover:underline"
+							>
 								Sign up
 							</Link>
-						</FieldDescription>
+						</div>
 					</Field>
 				</FieldGroup>
 			</form>

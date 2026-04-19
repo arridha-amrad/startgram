@@ -73,9 +73,15 @@ export default function SignupForm() {
 						Create Account
 						{isSubmitting && <Loader2 className="animate-spin" />}
 					</Button>
-					<FieldDescription className="text-center">
-						Already have an account? <Link to="/">Sign in</Link>
-					</FieldDescription>
+					<div className="text-center text-muted-foreground">
+						Already have an account?{" "}
+						<Link
+							to="/auth/login"
+							className="ml-auto underline-offset-4 hover:underline"
+						>
+							Sign in
+						</Link>
+					</div>
 				</CardFooter>
 			</Card>
 			<FieldDescription className="px-6 text-center">

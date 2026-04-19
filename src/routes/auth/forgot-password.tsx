@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import SignupForm from "#/components/forms/signup-form";
+import AuthFooter from "#/components/footers/auth-footer";
+import ForgotPasswordForm from "#/components/forms/forgot-password";
 import { LogoIcon } from "#/components/icons/logo";
-import AuthFooter from "@/components/footers/auth-footer";
 
-export const Route = createFileRoute("/auth/signup")({
+export const Route = createFileRoute("/auth/forgot-password")({
 	component: RouteComponent,
+	head: () => ({
+		meta: [
+			{
+				title: "Startgram - Forgot Password",
+			},
+		],
+	}),
 });
 
 function RouteComponent() {
@@ -15,7 +22,7 @@ function RouteComponent() {
 					<LogoIcon />
 					Startgram
 				</div>
-				<SignupForm />
+				<ForgotPasswordForm />
 			</div>
 			<AuthFooter />
 		</div>

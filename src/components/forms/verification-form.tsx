@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import { Loader2, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -47,7 +48,7 @@ export default function VerificationForm() {
 			});
 			if (res.data) {
 				reset();
-				toast.success("Verification successful", { duration: 5000 });
+				toast.success(m.auth_verification_success_message(), { duration: 5000 });
 				localStorage.removeItem("auth:email");
 				navigate({ to: "/" });
 			}
@@ -74,14 +75,14 @@ export default function VerificationForm() {
 	}, [setValue]);
 
 	const resendVerification = async () => {
-		const id = toast.loading("Sending verification code...");
+		const id = toast.loading(m.auth_verification_sending_code());
 		try {
 			const res = await authClient.emailOtp.sendVerificationOtp({
 				email,
 				type: "email-verification",
 			});
 			if (!res.error) {
-				toast.success("Verification code sent", { duration: 5000 });
+				toast.success(m.auth_verification_code_sent(), { duration: 5000 });
 			} else {
 				if (res.error.message) {
 					toast.error(res.error.message, { duration: 5000 });
@@ -99,10 +100,9 @@ export default function VerificationForm() {
 			<form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
 				<Card>
 					<CardHeader>
-						<CardTitle>Verify your email</CardTitle>
+						<CardTitle>{m.auth_verification_title()}</CardTitle>
 						<CardDescription className="text-green-600">
-							An email has been sent to {email}. Please check to get the otp
-							code.
+							{m.auth_verification_sent_to({ email })}
 						</CardDescription>
 					</CardHeader>
 
@@ -110,7 +110,7 @@ export default function VerificationForm() {
 						<Field>
 							<div className="flex items-center justify-between">
 								<FieldLabel htmlFor="otp-verification">
-									Verification code
+									{m.auth_verification_otp_label()}
 								</FieldLabel>
 								<Button
 									onClick={resendVerification}
@@ -118,7 +118,7 @@ export default function VerificationForm() {
 									size="xs"
 								>
 									<RefreshCwIcon />
-									Resend Code
+									{m.common_resend_code()}
 								</Button>
 							</div>
 
@@ -153,11 +153,11 @@ export default function VerificationForm() {
 					<CardFooter className="justify-stretch">
 						<Field>
 							<Button type="submit" className="w-full">
-								Verify
+								{m.auth_verification_verify_button()}
 								{isSubmitting && <Loader2 className="animate-spin" />}
 							</Button>
 							<FieldDescription className="text-center">
-								Back to <Link to="/auth/login">Sign in</Link>
+								{m.common_back_to()} <Link to="/auth/login">{m.auth_signin()}</Link>
 							</FieldDescription>
 						</Field>
 					</CardFooter>

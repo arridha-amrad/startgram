@@ -1,4 +1,11 @@
 import {
+	getLocale,
+	type Locale,
+	locales,
+	setLocale,
+} from "#/paraglide/runtime";
+import * as m from "@/paraglide/messages";
+import {
 	Select,
 	SelectContent,
 	SelectGroup,
@@ -8,41 +15,59 @@ import {
 	SelectValue,
 } from "../ui/select";
 
+const langMapper = (l: string) => {
+	const langs = {
+		en: "English",
+		tr: "Türkçe",
+		id: "Bahasa Indonesia",
+		jp: "日本語",
+	};
+	return langs[l as keyof typeof langs];
+};
+
 export default function AuthFooter() {
 	return (
 		<footer className="container mx-auto space-y-4 p-4 text-xs text-muted-foreground">
 			<ul className="flex flex-wrap justify-center gap-4">
-				<li>Meta</li>
-				<li>About</li>
-				<li>Blog</li>
-				<li>Jobs</li>
-				<li>Help</li>
-				<li>API</li>
-				<li>Privacy</li>
-				<li>Terms</li>
-				<li>Locations</li>
-				<li>Instagram Lite</li>
-				<li>Meta AI</li>
-				<li>Threads</li>
-				<li>Contact Uploading & Non-Users</li>
-				<li>Meta Verified</li>
-				<li>Meta in Indonesia</li>
+				<li>{m.footer_meta()}</li>
+				<li>{m.footer_about()}</li>
+				<li>{m.footer_blog()}</li>
+				<li>{m.footer_jobs()}</li>
+				<li>{m.footer_help()}</li>
+				<li>{m.footer_api()}</li>
+				<li>{m.footer_privacy()}</li>
+				<li>{m.footer_terms()}</li>
+				<li>{m.footer_locations()}</li>
+				<li>{m.footer_instagram_lite()}</li>
+				<li>{m.footer_meta_ai()}</li>
+				<li>{m.footer_threads()}</li>
+				<li>{m.footer_contact_uploading()}</li>
+				<li>{m.footer_meta_verified()}</li>
+				<li>{m.footer_meta_in_country()}</li>
 			</ul>
 			<div className="flex items-center justify-center gap-x-4">
-				<Select>
+				<Select
+					defaultValue={getLocale()}
+					onValueChange={(l) => setLocale(l as Locale)}
+				>
 					<SelectTrigger className="w-max text-xs">
-						<SelectValue placeholder="Language" />
+						<SelectValue placeholder={m.common_language()} />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectGroup>
-							<SelectLabel>Language</SelectLabel>
-							<SelectItem value="English">English</SelectItem>
-							<SelectItem value="Indonesian">Bahasa Indonesia</SelectItem>
-							<SelectItem value="Japanese">日本語</SelectItem>
-						</SelectGroup>
+						{locales.map((l) => (
+							<SelectItem key={l} value={l}>
+								{langMapper(l)}
+							</SelectItem>
+						))}
 					</SelectContent>
 				</Select>
-				<div>&copy; {new Date().getFullYear()} Nextgram from arridha amrad</div>
+				<div>
+					{m.footer_copyright({
+						year: new Date().getFullYear().toString(),
+						app_name: m.common_app_name(),
+						author: "arridha amrad",
+					})}
+				</div>
 			</div>
 		</footer>
 	);

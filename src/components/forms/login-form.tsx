@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import { createServerFn } from "@tanstack/react-start";
 import { Eye, EyeOff, Loader2, RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
@@ -126,16 +127,15 @@ export function LoginForm({
 			>
 				<FieldGroup>
 					<div className="flex flex-col items-center gap-1 text-center">
-						<h1 className="text-2xl font-bold">Login to your account</h1>
+						<h1 className="text-2xl font-bold">{m.auth_login_page_title()}</h1>
 						<p className="text-sm text-balance text-muted-foreground">
-							Enter your email below to login to your account
+							{m.auth_login_page_description()}
 						</p>
 					</div>
 					{isShowResendVerificationBtn && (
 						<Field className="justify-center">
 							<p className="text-sm text-balance text-destructive text-center">
-								Your email is not verified. Click button bellow to verify your
-								account
+								{m.auth_login_page_email_not_verified()}
 							</p>
 							<Button
 								type="button"
@@ -143,15 +143,15 @@ export function LoginForm({
 								variant="outline"
 							>
 								<RefreshCwIcon />
-								Resend Verification Code
+								{m.auth_login_page_resend_verification()}
 							</Button>
 						</Field>
 					)}
 					<Field>
-						<FieldLabel htmlFor="identifier">Email or username</FieldLabel>
+						<FieldLabel htmlFor="identifier">{m.auth_login_page_identifier_label()}</FieldLabel>
 						<Input
 							id="identifier"
-							placeholder="m@example.com"
+							placeholder={m.auth_login_page_identifier_placeholder()}
 							className="bg-background"
 							{...register("identifier")}
 						/>
@@ -161,18 +161,18 @@ export function LoginForm({
 					</Field>
 					<Field>
 						<div className="flex items-center">
-							<FieldLabel htmlFor="password">Password</FieldLabel>
+							<FieldLabel htmlFor="password">{m.auth_login_page_password_label()}</FieldLabel>
 							<Link
 								to="/auth/forgot-password"
 								className="ml-auto text-sm underline-offset-4 hover:underline"
 							>
-								Forgot your password?
+								{m.auth_login_page_forgot_password_link()}
 							</Link>
 						</div>
 						<InputGroup>
 							<InputGroupInput
 								type={isShowPwd ? "text" : "password"}
-								placeholder="*******"
+								placeholder={m.auth_login_page_password_placeholder()}
 								{...register("password")}
 							/>
 							<InputGroupAddon align="inline-end">
@@ -192,12 +192,12 @@ export function LoginForm({
 					</Field>
 					<Field>
 						<Button type="submit">
-							Login
+							{m.auth_login()}
 							{isSubmitting && <Loader2 className="animate-spin" />}
 						</Button>
 					</Field>
 					<FieldSeparator className="*:data-[slot=field-separator-content]:bg-muted dark:*:data-[slot=field-separator-content]:bg-card">
-						Or continue with
+						{m.common_or_continue_with()}
 					</FieldSeparator>
 					<Field>
 						<Button variant="outline" type="button">
@@ -208,15 +208,15 @@ export function LoginForm({
 									fill="currentColor"
 								/>
 							</svg>
-							Login with GitHub
+							{m.auth_login_page_github_login()}
 						</Button>
 						<div className="text-center text-muted-foreground text-sm">
-							Don&apos;t have an account?{" "}
+							{m.auth_dont_have_account()}{" "}
 							<Link
 								to="/auth/signup"
 								className="ml-auto underline-offset-4 hover:underline"
 							>
-								Sign up
+								{m.auth_signup()}
 							</Link>
 						</div>
 					</Field>

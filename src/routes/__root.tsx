@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Toaster } from "react-hot-toast";
 import { getLocale } from "#/paraglide/runtime";
+import * as m from "@/paraglide/messages";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
@@ -36,7 +37,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: m.common_logo_text(),
 			},
 		],
 		links: [
@@ -47,14 +48,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 	shellComponent: RootDocument,
-	notFoundComponent: () => <div>not found</div>,
+	notFoundComponent: () => <div>{m.common_not_found()}</div>,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang={getLocale()} suppressHydrationWarning>
 			<head>
-				<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+				<script>{THEME_INIT_SCRIPT}</script>
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased">

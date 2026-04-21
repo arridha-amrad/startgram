@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import SignupForm from "#/components/forms/signup-form";
 import { LogoIcon } from "#/components/icons/logo";
 import AuthFooter from "@/components/footers/auth-footer";
@@ -13,7 +14,7 @@ function RouteComponent() {
 			<div className="flex w-full max-w-sm flex-1 flex-col gap-6">
 				<div className="flex items-center gap-2 self-center font-medium">
 					<LogoIcon />
-					Startgram
+					{m.common_app_name()}
 				</div>
 				<SignupForm />
 			</div>

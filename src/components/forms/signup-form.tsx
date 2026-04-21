@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import { Loader2 } from "lucide-react";
 import { useRef } from "react";
 import {
@@ -50,9 +51,9 @@ export default function SignupForm() {
 		<fieldset disabled={isSubmitting} className="flex flex-col gap-4">
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Create your account</CardTitle>
+					<CardTitle className="text-xl">{m.auth_signup_page_title()}</CardTitle>
 					<CardDescription>
-						Enter your information below to create your account
+						{m.auth_signup_page_description()}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -70,23 +71,23 @@ export default function SignupForm() {
 						onClick={() => formRef.current?.requestSubmit()}
 						className="self-stretch"
 					>
-						Create Account
+						{m.auth_create_account()}
 						{isSubmitting && <Loader2 className="animate-spin" />}
 					</Button>
 					<div className="text-center text-muted-foreground">
-						Already have an account?{" "}
+						{m.auth_already_have_account()}{" "}
 						<Link
 							to="/auth/login"
 							className="ml-auto underline-offset-4 hover:underline"
 						>
-							Sign in
+							{m.auth_signin()}
 						</Link>
 					</div>
 				</CardFooter>
 			</Card>
 			<FieldDescription className="px-6 text-center">
-				By clicking continue, you agree to our <a href="/">Terms of Service</a>{" "}
-				and <a href="/">Privacy Policy</a>.
+				{m.auth_signup_page_terms_agreement()} <a href="/">{m.auth_signup_page_terms_link()}</a>{" "}
+				{m.auth_signup_page_and()} <a href="/">{m.auth_signup_page_privacy_link()}</a>.
 			</FieldDescription>
 		</fieldset>
 	);
@@ -158,7 +159,7 @@ const Form = ({
 		<form ref={ref} onSubmit={handleSubmit(onSubmit)}>
 			<FieldGroup>
 				<Field>
-					<FieldLabel htmlFor="picture">Picture</FieldLabel>
+					<FieldLabel htmlFor="picture">{m.auth_signup_page_picture_label()}</FieldLabel>
 					<Input
 						id="picture"
 						type="file"
@@ -174,34 +175,34 @@ const Form = ({
 						}}
 					/>
 					<FieldError errors={[errors.avatar]} />
-					<FieldDescription>Select a picture to upload.</FieldDescription>
+					<FieldDescription>{m.auth_signup_page_picture_description()}</FieldDescription>
 				</Field>
 				<Field>
-					<FieldLabel htmlFor="name">Full Name</FieldLabel>
+					<FieldLabel htmlFor="name">{m.auth_signup_page_fullname_label()}</FieldLabel>
 					<Input
 						id="name"
 						type="text"
-						placeholder="John Doe"
+						placeholder={m.auth_signup_page_fullname_placeholder()}
 						{...register("fullName")}
 					/>
 					<FieldError errors={[errors.fullName]} />
 				</Field>
 				<Field>
-					<FieldLabel htmlFor="username">Username</FieldLabel>
+					<FieldLabel htmlFor="username">{m.auth_signup_page_username_label()}</FieldLabel>
 					<Input
 						id="username"
 						type="text"
-						placeholder="johndoe"
+						placeholder={m.auth_signup_page_username_placeholder()}
 						{...register("username")}
 					/>
 					<FieldError errors={[errors.username]} />
 				</Field>
 				<Field>
-					<FieldLabel htmlFor="email">Email</FieldLabel>
+					<FieldLabel htmlFor="email">{m.auth_signup_page_email_label()}</FieldLabel>
 					<Input
 						id="email"
 						type="email"
-						placeholder="m@example.com"
+						placeholder={m.auth_signup_page_email_placeholder()}
 						{...register("email")}
 					/>
 					<FieldError errors={[errors.email]} />
@@ -209,12 +210,12 @@ const Form = ({
 				<Field>
 					<Field className="grid grid-cols-2 gap-4">
 						<Field>
-							<FieldLabel htmlFor="password">Password</FieldLabel>
+							<FieldLabel htmlFor="password">{m.auth_signup_page_password_label()}</FieldLabel>
 							<Input id="password" type="password" {...register("password")} />
 						</Field>
 						<Field>
 							<FieldLabel htmlFor="confirm-password">
-								Confirm Password
+								{m.auth_signup_page_confirm_password_label()}
 							</FieldLabel>
 							<Input
 								id="confirm-password"
@@ -233,7 +234,7 @@ const Form = ({
 					/>
 					{!errors.password && !errors.confirmPassword && (
 						<FieldDescription>
-							Must be at least 8 characters long.
+							{m.auth_signup_page_password_hint()}
 						</FieldDescription>
 					)}
 				</Field>

@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { env } from "#/env";
 import { authClient } from "#/lib/auth-client";
 import { cn } from "#/lib/utils";
+import * as m from "@/paraglide/messages";
 import {
 	forgotpwdSchema,
 	type TForgotPwdSchema,
@@ -39,7 +40,7 @@ export default function ForgotPasswordForm() {
 			}
 		} catch (err) {
 			console.log(err);
-			toast.error("Something went wrong");
+			toast.error(m.common_error_generic());
 		}
 	};
 
@@ -51,7 +52,9 @@ export default function ForgotPasswordForm() {
 			>
 				<FieldGroup>
 					<div className="flex flex-col items-center gap-1 text-center">
-						<h1 className="text-2xl font-bold">Forgot Password</h1>
+						<h1 className="text-2xl font-bold">
+							{m.auth_forgot_password_title()}
+						</h1>
 						<p
 							className={cn(
 								"text-sm text-balance",
@@ -59,16 +62,18 @@ export default function ForgotPasswordForm() {
 							)}
 						>
 							{isSubmitSuccessful
-								? "Password reset email sent successfully"
-								: "Enter your email below to reset your password"}
+								? m.auth_forgot_password_success_message()
+								: m.auth_forgot_password_description()}
 						</p>
 					</div>
 
 					<Field>
-						<FieldLabel htmlFor="email">Email</FieldLabel>
+						<FieldLabel htmlFor="email">
+							{m.auth_forgot_password_email_label()}
+						</FieldLabel>
 						<Input
 							id="email"
-							placeholder="m@example.com"
+							placeholder={m.auth_forgot_password_email_placeholder()}
 							className="bg-background"
 							{...register("email")}
 						/>
@@ -79,19 +84,19 @@ export default function ForgotPasswordForm() {
 
 					<Field>
 						<Button type="submit">
-							Submit
+							{m.common_submit()}
 							{isSubmitting && <Loader2 className="animate-spin" />}
 						</Button>
 					</Field>
 
 					<Field>
 						<div className="text-center text-sm text-muted-foreground">
-							Back to?{" "}
+							{m.common_back_to()}{" "}
 							<Link
 								to="/auth/login"
 								className="ml-auto underline-offset-4 hover:underline"
 							>
-								Login
+								{m.auth_login()}
 							</Link>
 						</div>
 					</Field>

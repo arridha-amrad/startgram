@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import toast from "react-hot-toast";
 import { Button } from "#/components/ui/button";
 import { getSession } from "#/lib/auth.functions";
@@ -30,7 +31,7 @@ function App() {
 	return (
 		<div>
 			<h1>{user?.name}</h1>
-			<Button onClick={logout}>Logout</Button>
+			<Button onClick={logout}>{m.common_logout()}</Button>
 		</div>
 	);
 }

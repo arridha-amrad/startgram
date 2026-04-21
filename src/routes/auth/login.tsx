@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import * as m from "@/paraglide/messages";
 import { LoginForm } from "#/components/forms/login-form";
 import { LogoIcon } from "#/components/icons/logo";
 import AuthFooter from "@/components/footers/auth-footer";
@@ -16,7 +17,7 @@ function RouteComponent() {
 						<div className="w-full max-w-xs flex flex-col gap-6">
 							<div className="flex items-center justify-center gap-2 self-center font-medium">
 								<LogoIcon />
-								Startgram
+								{m.common_app_name()}
 							</div>
 							<LoginForm />
 						</div>
@@ -25,8 +26,8 @@ function RouteComponent() {
 				<div className="relative hidden flex-col justify-center bg-muted lg:flex">
 					<div className="">
 						<h2 className="scroll-m-20 text-center text-5xl font-extrabold text-balance">
-							See everyday moments from your&nbsp;
-							<span className="text-primary">close friends.</span>
+							{m.common_login_tagline()}
+							<span className="text-primary">{m.common_login_tagline_highlight()}</span>
 						</h2>
 					</div>
 					<div className="mx-auto aspect-square w-lg">

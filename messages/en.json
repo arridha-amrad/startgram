@@ -1,6 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password",
+  "INVALID_USERNAME_OR_PASSWORD": "Invalid username or password",
   "common_logout": "Logout",
   "common_docs": "Docs",
   "common_not_found": "not found",

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import * as m from "@/paraglide/messages";
 import AuthFooter from "#/components/footers/auth-footer";
-import ForgotPasswordForm from "#/components/forms/forgot-password";
+import ForgotPasswordForm from "#/components/forms/forgotpwd-form";
 import { LogoIcon } from "#/components/icons/logo";
+import * as m from "@/paraglide/messages";
 
 export const Route = createFileRoute("/auth/forgot-password")({
 	component: RouteComponent,

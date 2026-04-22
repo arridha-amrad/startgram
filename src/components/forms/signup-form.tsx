@@ -149,9 +149,8 @@ export default function SignupForm() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+						<form onSubmit={handleSubmit(onSubmit)}>
 							<FieldGroup>
-								{/* Avatar Field */}
 								<Field>
 									<div className="h-max flex justify-center">
 										<button
@@ -179,7 +178,6 @@ export default function SignupForm() {
 									/>
 								</Field>
 
-								{/* Full Name Field */}
 								<FormInput
 									name={"fullName"}
 									label={m.auth_signup_page_fullname_label()}
@@ -204,7 +202,6 @@ export default function SignupForm() {
 									register={register}
 								/>
 
-								{/* Password Fields */}
 								<Field>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 										<FormInput
@@ -236,13 +233,14 @@ export default function SignupForm() {
 										</FieldDescription>
 									)}
 								</Field>
-							</FieldGroup>
 
-							{/* Submit Button placed inside form to use native behavior */}
-							<Button type="submit" className="w-full mt-6">
-								{m.auth_create_account()}
-								{isSubmitting && <Loader2 className="animate-spin" />}
-							</Button>
+								<Field>
+									<Button type="submit" className="w-full">
+										{m.auth_create_account()}
+										{isSubmitting && <Loader2 className="animate-spin" />}
+									</Button>
+								</Field>
+							</FieldGroup>
 						</form>
 					</CardContent>
 					<CardFooter>
@@ -271,6 +269,7 @@ export default function SignupForm() {
 					.
 				</FieldDescription>
 			</fieldset>
+
 			<DialogCropImage
 				imageSrc={pickedImage}
 				open={!!pickedImage}

@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import * as m from "@/paraglide/messages";
 import { Loader2, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -10,6 +9,7 @@ import {
 	type TVerificationSchema,
 	verificationSchema,
 } from "#/zod-schemas/verification-schema";
+import * as m from "@/paraglide/messages";
 import { Button } from "../ui/button";
 import {
 	Card,
@@ -48,7 +48,9 @@ export default function VerificationForm() {
 			});
 			if (res.data) {
 				reset();
-				toast.success(m.auth_verification_success_message(), { duration: 5000 });
+				toast.success(m.auth_verification_success_message(), {
+					duration: 5000,
+				});
 				localStorage.removeItem("auth:email");
 				navigate({ to: "/" });
 			}
@@ -127,6 +129,7 @@ export default function VerificationForm() {
 								name="otp"
 								render={({ field }) => (
 									<InputOTP
+										id="otp-verification"
 										onComplete={() => formRef.current?.requestSubmit()}
 										{...field}
 										maxLength={6}
@@ -157,7 +160,8 @@ export default function VerificationForm() {
 								{isSubmitting && <Loader2 className="animate-spin" />}
 							</Button>
 							<FieldDescription className="text-center">
-								{m.common_back_to()} <Link to="/auth/login">{m.auth_signin()}</Link>
+								{m.common_back_to()}{" "}
+								<Link to="/auth/login">{m.auth_signin()}</Link>
 							</FieldDescription>
 						</Field>
 					</CardFooter>

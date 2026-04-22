@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import * as m from "@/paraglide/messages";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -10,9 +9,10 @@ import {
 	resetpwdSchema,
 	type TResetPwdSchema,
 } from "#/zod-schemas/resetpwd-schema";
+import * as m from "@/paraglide/messages";
+import { FormInput } from "../form-input";
 import { Button } from "../ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { Field, FieldGroup } from "../ui/field";
 
 export default function ResetPasswordForm() {
 	const {
@@ -58,39 +58,31 @@ export default function ResetPasswordForm() {
 			>
 				<FieldGroup>
 					<div className="flex flex-col items-center gap-1 text-center">
-						<h1 className="text-2xl font-bold">{m.auth_reset_password_title()}</h1>
+						<h1 className="text-2xl font-bold">
+							{m.auth_reset_password_title()}
+						</h1>
 						<p className="text-sm text-balance text-muted-foreground">
 							{m.auth_reset_password_description()}
 						</p>
 					</div>
 
-					<Field>
-						<FieldLabel htmlFor="password">{m.auth_reset_password_password_label()}</FieldLabel>
-						<Input
-							id="password"
-							placeholder="********"
-							className="bg-background"
-							{...register("password")}
-						/>
-						{!!errors.password && (
-							<FieldError errors={[{ message: errors.password?.message }]} />
-						)}
-					</Field>
+					<FormInput
+						label={m.auth_reset_password_password_label()}
+						name="password"
+						register={register}
+						validationError={errors.password?.message}
+						placeholder="********"
+						type="password"
+					/>
 
-					<Field>
-						<FieldLabel htmlFor="confirmPassword">{m.auth_reset_password_confirm_password_label()}</FieldLabel>
-						<Input
-							id="confirmPassword"
-							placeholder="********"
-							className="bg-background"
-							{...register("confirmPassword")}
-						/>
-						{!!errors.confirmPassword && (
-							<FieldError
-								errors={[{ message: errors.confirmPassword?.message }]}
-							/>
-						)}
-					</Field>
+					<FormInput
+						label={m.auth_reset_password_confirm_password_label()}
+						name="confirmPassword"
+						register={register}
+						validationError={errors.confirmPassword?.message}
+						placeholder="********"
+						type="password"
+					/>
 
 					<Field>
 						<Button type="submit">

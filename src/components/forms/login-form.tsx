@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import * as m from "@/paraglide/messages";
+import { FormInput } from "../form-input";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -67,10 +68,15 @@ export function LoginForm({
 					});
 
 			if (error) {
+				console.log({ error });
+
 				if (error.code) {
 					switch (error.code) {
 						case "INVALID_EMAIL_OR_PASSWORD":
 							setAuthError(m.INVALID_EMAIL_OR_PASSWORD());
+							break;
+						case "INVALID_USERNAME_OR_PASSWORD":
+							setAuthError(m.INVALID_USERNAME_OR_PASSWORD());
 							break;
 						case "EMAIL_NOT_VERIFIED":
 							setAuthError(m.auth_login_page_email_not_verified());
@@ -139,7 +145,7 @@ export function LoginForm({
 								authError ? "text-destructive" : "text-muted-foreground",
 							)}
 						>
-							{authError || m.auth_login_page_description()}
+							{authError ?? m.auth_login_page_description()}
 						</p>
 					</div>
 					{isShowResendVerificationBtn && (
@@ -154,60 +160,30 @@ export function LoginForm({
 							</Button>
 						</Field>
 					)}
-					<Field>
-						<FieldLabel htmlFor="identifier">
-							{m.auth_login_page_identifier_label()}
-						</FieldLabel>
-						<Input
-							id="identifier"
-							placeholder={m.auth_login_page_identifier_placeholder()}
-							className="bg-background"
-							{...register("identifier")}
-						/>
-						{!!errors.identifier && (
-							<FieldError errors={[{ message: errors.identifier?.message }]} />
-						)}
-					</Field>
-					<Field>
-						<div className="flex items-center">
-							<FieldLabel htmlFor="password">
-								{m.auth_login_page_password_label()}
-							</FieldLabel>
-							<Link
-								to="/auth/forgot-password"
-								className="ml-auto text-sm underline-offset-4 hover:underline"
-							>
-								{m.auth_login_page_forgot_password_link()}
-							</Link>
-						</div>
-						<InputGroup>
-							<InputGroupInput
-								id="password"
-								type={isShowPwd ? "text" : "password"}
-								placeholder={m.auth_login_page_password_placeholder()}
-								{...register("password")}
-							/>
-							<InputGroupAddon align="inline-end">
-								<Button
-									type="button"
-									onClick={() => setIsShowPwd((val) => !val)}
-									size="icon"
-									variant="ghost"
-								>
-									{isShowPwd ? <Eye /> : <EyeOff />}
-								</Button>
-							</InputGroupAddon>
-						</InputGroup>
-						{!!errors.password && (
-							<FieldError errors={[{ message: errors.password?.message }]} />
-						)}
-					</Field>
+					<FormInput
+						label={m.auth_login_page_identifier_label()}
+						name="identifier"
+						register={register}
+						validationError={errors.identifier?.message}
+						placeholder={m.auth_login_page_identifier_placeholder()}
+					/>
+
+					<FormInput
+						label={m.auth_login_page_password_label()}
+						name="password"
+						register={register}
+						validationError={errors.password?.message}
+						placeholder="********"
+						type="password"
+					/>
+
 					<Field>
 						<Button type="submit">
 							{m.auth_login()}
 							{isSubmitting && <Loader2 className="animate-spin" />}
 						</Button>
 					</Field>
+
 					<FieldSeparator className="*:data-[slot=field-separator-content]:bg-muted dark:*:data-[slot=field-separator-content]:bg-card">
 						{m.common_or_continue_with()}
 					</FieldSeparator>

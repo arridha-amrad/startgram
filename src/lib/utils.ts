@@ -1,5 +1,6 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { createClientOnlyFn } from "@tanstack/react-start";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -18,3 +19,12 @@ export const getPublicIdFromUrl = (url: string) => {
 };
 
 
+export const convertBlobToFile = createClientOnlyFn((
+  blob: Blob,
+  fileName: string,
+): File => {
+  return new File([blob], fileName, {
+    type: blob.type,
+    lastModified: Date.now(),
+  });
+});

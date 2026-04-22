@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import Cropper, { type Area, type Point } from "react-easy-crop";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { authClient } from "#/lib/auth-client";
@@ -10,6 +12,8 @@ import {
 	transformations,
 	uploadToCloudinary,
 } from "#/lib/cloudinary.functions";
+import { getCroppedImg } from "#/lib/cropper";
+import { convertBlobToFile } from "#/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -20,15 +24,22 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import {
 	Field,
 	FieldDescription,
 	FieldError,
 	FieldGroup,
-	FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import * as m from "@/paraglide/messages";
 import { signupSchema, type TSignupSchema } from "@/zod-schemas/signup-schema";
+import { FormInput } from "../form-input";
 
 export default function SignupForm() {
 	const navigate = useNavigate();
@@ -90,7 +101,6 @@ export default function SignupForm() {
 			if (res.data) {
 				localStorage.setItem("auth:email", data.email);
 				reset();
-				toast.success("Account created! Please verify your email.");
 				navigate({ to: "/auth/verification" });
 			}
 		} catch (err) {
@@ -103,6 +113,12 @@ export default function SignupForm() {
 		}
 	};
 
+	const inputFileRef = useRef<HTMLInputElement>(null);
+	const [previewCroppedImage, setPreviewCroppedImage] = useState<string | null>(
+		null,
+	);
+	const [pickedImage, setPickedImage] = useState<string | null>(null);
+
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
@@ -113,154 +129,258 @@ export default function SignupForm() {
 			e.target.value = "";
 			return;
 		}
-
-		setValue("avatar", file, { shouldValidate: true });
+		const reader = new FileReader();
+		reader.addEventListener("load", () =>
+			setPickedImage(reader.result as string),
+		);
+		reader.readAsDataURL(file);
 	};
 
 	return (
-		<fieldset disabled={isSubmitting} className="flex flex-col gap-4">
-			<Card>
-				<CardHeader className="text-center">
-					<CardTitle className="text-xl">
-						{m.auth_signup_page_title()}
-					</CardTitle>
-					<CardDescription>{m.auth_signup_page_description()}</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-						<FieldGroup>
-							{/* Avatar Field */}
-							<Field>
-								<FieldLabel htmlFor="avatar">
-									{m.auth_signup_page_picture_label()}
-								</FieldLabel>
-								<Input
-									id="avatar"
-									type="file"
-									accept="image/*"
-									onChange={handleFileChange}
-								/>
-								<FieldError errors={[errors.avatar]} />
-								<FieldDescription>
-									{m.auth_signup_page_picture_description()}
-								</FieldDescription>
-							</Field>
+		<>
+			<fieldset disabled={isSubmitting} className="flex flex-col gap-4">
+				<Card>
+					<CardHeader className="text-center">
+						<CardTitle className="text-xl">
+							{m.auth_signup_page_title()}
+						</CardTitle>
+						<CardDescription>
+							{m.auth_signup_page_description()}
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+							<FieldGroup>
+								{/* Avatar Field */}
+								<Field>
+									<div className="h-max flex justify-center">
+										<button
+											type="button"
+											onClick={() => inputFileRef.current?.click()}
+											className="size-24 rounded-full bg-muted flex items-center justify-center overflow-hidden cursor-pointer"
+										>
+											{previewCroppedImage ? (
+												<img
+													src={previewCroppedImage}
+													alt="Avatar preview"
+													className="w-full h-full object-cover"
+												/>
+											) : (
+												<User className="size-12 text-muted-foreground" />
+											)}
+										</button>
+									</div>
+									<input
+										hidden
+										ref={inputFileRef}
+										type="file"
+										accept="image/*"
+										onChange={handleFileChange}
+									/>
+								</Field>
 
-							{/* Full Name Field */}
-							<Field>
-								<FieldLabel htmlFor="fullName">
-									{m.auth_signup_page_fullname_label()}
-								</FieldLabel>
-								<Input
-									id="fullName"
-									type="text"
+								{/* Full Name Field */}
+								<FormInput
+									name={"fullName"}
+									label={m.auth_signup_page_fullname_label()}
 									placeholder={m.auth_signup_page_fullname_placeholder()}
-									{...register("fullName")}
+									validationError={errors.fullName?.message as string}
+									register={register}
 								/>
-								<FieldError errors={[errors.fullName]} />
-							</Field>
 
-							{/* Username Field */}
-							<Field>
-								<FieldLabel htmlFor="username">
-									{m.auth_signup_page_username_label()}
-								</FieldLabel>
-								<Input
-									id="username"
-									type="text"
+								<FormInput
+									name={"username"}
+									label={m.auth_signup_page_username_label()}
 									placeholder={m.auth_signup_page_username_placeholder()}
-									{...register("username")}
+									validationError={errors.username?.message as string}
+									register={register}
 								/>
-								<FieldError errors={[errors.username]} />
-							</Field>
 
-							{/* Email Field */}
-							<Field>
-								<FieldLabel htmlFor="email">
-									{m.auth_signup_page_email_label()}
-								</FieldLabel>
-								<Input
-									id="email"
-									type="email"
+								<FormInput
+									name={"email"}
+									label={m.auth_signup_page_email_label()}
 									placeholder={m.auth_signup_page_email_placeholder()}
-									{...register("email")}
+									validationError={errors.email?.message as string}
+									register={register}
 								/>
-								<FieldError errors={[errors.email]} />
-							</Field>
 
-							{/* Password Fields */}
-							<Field>
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-									<Field>
-										<FieldLabel htmlFor="password">
-											{m.auth_signup_page_password_label()}
-										</FieldLabel>
-										<Input
-											id="password"
+								{/* Password Fields */}
+								<Field>
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+										<FormInput
+											name={"password"}
+											label={m.auth_signup_page_password_label()}
+											register={register}
 											type="password"
-											{...register("password")}
 										/>
-									</Field>
-									<Field>
-										<FieldLabel htmlFor="confirmPassword">
-											{m.auth_signup_page_confirm_password_label()}
-										</FieldLabel>
-										<Input
-											id="confirmPassword"
+										<FormInput
+											name={"confirmPassword"}
+											label={m.auth_signup_page_confirm_password_label()}
+											register={register}
 											type="password"
-											{...register("confirmPassword")}
 										/>
-									</Field>
-								</div>
-								<FieldError
-									errors={[
-										{
-											message:
-												errors.password?.message ||
-												errors.confirmPassword?.message,
-										},
-									]}
-								/>
-								{!errors.password && !errors.confirmPassword && (
-									<FieldDescription>
-										{m.auth_signup_page_password_hint()}
-									</FieldDescription>
-								)}
-							</Field>
-						</FieldGroup>
+									</div>
+									{errors.password || errors.confirmPassword ? (
+										<FieldError
+											errors={[
+												{
+													message:
+														errors.password?.message ||
+														errors.confirmPassword?.message,
+												},
+											]}
+										/>
+									) : (
+										<FieldDescription>
+											{m.auth_signup_page_password_hint()}
+										</FieldDescription>
+									)}
+								</Field>
+							</FieldGroup>
 
-						{/* Submit Button placed inside form to use native behavior */}
-						<Button type="submit" className="w-full mt-6">
-							{m.auth_create_account()}
-							{isSubmitting && <Loader2 className="animate-spin" />}
-						</Button>
-					</form>
-				</CardContent>
-				<CardFooter>
-					<div className="w-full text-center text-muted-foreground">
-						{m.auth_already_have_account()}{" "}
-						<Link
-							to="/auth/login"
-							className="underline underline-offset-4 hover:text-primary transition-colors"
-						>
-							{m.auth_signin()}
-						</Link>
-					</div>
-				</CardFooter>
-			</Card>
+							{/* Submit Button placed inside form to use native behavior */}
+							<Button type="submit" className="w-full mt-6">
+								{m.auth_create_account()}
+								{isSubmitting && <Loader2 className="animate-spin" />}
+							</Button>
+						</form>
+					</CardContent>
+					<CardFooter>
+						<div className="w-full text-center text-muted-foreground">
+							{m.auth_already_have_account()}{" "}
+							<Link
+								to="/auth/login"
+								className="underline underline-offset-4 hover:text-primary transition-colors"
+							>
+								{m.auth_signin()}
+							</Link>
+						</div>
+					</CardFooter>
+				</Card>
 
-			{/* Terms and Privacy */}
-			<FieldDescription className="px-6 text-center text-xs text-muted-foreground">
-				{m.auth_signup_page_terms_agreement()}{" "}
-				<Link to="/" className="underline hover:text-primary">
-					{m.auth_signup_page_terms_link()}
-				</Link>{" "}
-				{m.auth_signup_page_and()}{" "}
-				<Link to="/" className="underline hover:text-primary">
-					{m.auth_signup_page_privacy_link()}
-				</Link>
-				.
-			</FieldDescription>
-		</fieldset>
+				{/* Terms and Privacy */}
+				<FieldDescription className="px-6 text-center text-xs text-muted-foreground">
+					{m.auth_signup_page_terms_agreement()}{" "}
+					<Link to="/" className="underline hover:text-primary">
+						{m.auth_signup_page_terms_link()}
+					</Link>{" "}
+					{m.auth_signup_page_and()}{" "}
+					<Link to="/" className="underline hover:text-primary">
+						{m.auth_signup_page_privacy_link()}
+					</Link>
+					.
+				</FieldDescription>
+			</fieldset>
+			<DialogCropImage
+				imageSrc={pickedImage}
+				open={!!pickedImage}
+				onOpenChange={(open) => {
+					if (!open) setPickedImage(null);
+				}}
+				onCrop={async (file) => {
+					setValue("avatar", file, { shouldValidate: true });
+					setPreviewCroppedImage(URL.createObjectURL(file));
+					setPickedImage(null);
+				}}
+			/>
+		</>
 	);
 }
+
+const DialogCropImage = ({
+	open,
+	onOpenChange,
+	imageSrc,
+	onCrop,
+}: {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	imageSrc: string | null;
+	onCrop: (file: File) => void;
+}) => {
+	const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+	const [zoom, setZoom] = useState(1);
+	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+	const [isCropping, setIsCropping] = useState(false);
+
+	const onCropComplete = useCallback((_: Area, area: Area) => {
+		setCroppedAreaPixels(area);
+	}, []);
+
+	const handleCrop = async () => {
+		if (!imageSrc || !croppedAreaPixels) return;
+
+		setIsCropping(true);
+		try {
+			const croppedBlob = await getCroppedImg({
+				imageSrc,
+				pixelCrop: croppedAreaPixels,
+			});
+
+			if (croppedBlob) {
+				const file = convertBlobToFile(croppedBlob, "avatar.jpg");
+				onCrop(file);
+			}
+		} catch (error) {
+			console.error("Crop error:", error);
+			toast.error("Failed to crop image");
+		} finally {
+			setIsCropping(false);
+		}
+	};
+
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="sm:max-w-md overflow-hidden flex flex-col h-[500px]">
+				<DialogHeader>
+					<DialogTitle>Crop Image</DialogTitle>
+					<DialogDescription>
+						Drag and zoom to crop your profile picture.
+					</DialogDescription>
+				</DialogHeader>
+
+				<div className="relative flex-1 bg-muted rounded-md overflow-hidden my-4">
+					{imageSrc && (
+						<Cropper
+							image={imageSrc}
+							crop={crop}
+							zoom={zoom}
+							aspect={1}
+							onCropChange={setCrop}
+							onCropComplete={onCropComplete}
+							onZoomChange={setZoom}
+						/>
+					)}
+				</div>
+
+				<div className="space-y-2">
+					<div className="flex items-center gap-4">
+						<span className="text-sm font-medium">Zoom</span>
+						<input
+							type="range"
+							min={1}
+							max={3}
+							step={0.1}
+							value={zoom}
+							onChange={(e) => setZoom(Number(e.target.value))}
+							className="flex-1"
+						/>
+					</div>
+				</div>
+
+				<DialogFooter className="mt-4 gap-2">
+					<Button
+						variant="outline"
+						onClick={() => onOpenChange(false)}
+						disabled={isCropping}
+					>
+						Cancel
+					</Button>
+					<Button onClick={handleCrop} disabled={isCropping || !imageSrc}>
+						{isCropping ? <Loader2 className="animate-spin" /> : "Apply Crop"}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+};

@@ -1,11 +1,20 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createClientOnlyFn, createServerFn } from "@tanstack/react-start";
 import { v2 as cloudinary } from "cloudinary";
+import z from "zod";
 import { env } from "#/env";
 
 interface CloudinaryUploadResult {
 	secure_url: string;
 	public_id: string;
 }
+
+export const transformations = {
+	avatar: "w_400,h_400,c_fill,g_face",
+};
+
+export const folders = {
+	avatar: "startgram/avatars",
+};
 
 const initCloudinary = () => {
 	cloudinary.config({
@@ -31,6 +40,7 @@ export const uploadImage = createServerFn({ method: "POST" })
 			cloudinary.uploader
 				.upload_stream(
 					{
+						resource_type: file.type.startsWith("image") ? "image" : "auto",
 						folder: folderName || undefined,
 					},
 					(error, result) => {
@@ -53,3 +63,71 @@ export const removeFile = createServerFn({ method: "POST" })
 		console.log("remove result : ", result);
 		return result;
 	});
+
+const data = z.object({
+	folderName: z.string().min(3, "please provide a valid folder name"),
+});
+
+export const getSignatureFn = createServerFn({ method: "GET" })
+	.inputValidator(data)
+	.handler(({ data: { folderName } }) => {
+		var timestamp = Math.round(Date.now() / 1000);
+		// Buat signature (misalnya untuk folder 'video-uploads')
+		const signature = cloudinary.utils.api_sign_request(
+			{
+				timestamp: timestamp,
+				folder: folderName,
+				transformation: transformations.avatar,
+			},
+			env.CLOUDINARY_SECRET,
+		);
+
+		return {
+			signature,
+			timestamp,
+			cloudName: env.CLOUDINARY_CLOUD_NAME,
+			apiKey: env.CLOUDINARY_KEY,
+		};
+	});
+
+/**
+ * Client-side utility to upload a file directly to Cloudinary using a signed request.
+ */
+export const uploadToCloudinary = createClientOnlyFn(
+	async (file: File, options: { folder: string; transformation?: string }) => {
+		try {
+			const { apiKey, cloudName, signature, timestamp } = await getSignatureFn({
+				data: { folderName: options.folder },
+			});
+
+			const formData = new FormData();
+			formData.append("file", file);
+			formData.append("api_key", apiKey);
+			formData.append("signature", signature);
+			formData.append("timestamp", timestamp.toString());
+			formData.append("folder", options.folder);
+			if (options.transformation) {
+				formData.append("transformation", options.transformation);
+			}
+
+			const response = await fetch(
+				`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+				{
+					method: "POST",
+					body: formData,
+				},
+			);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error?.message || "Upload failed");
+			}
+
+			const data = await response.json();
+			return data as CloudinaryUploadResult;
+		} catch (err) {
+			console.error("Cloudinary upload error:", err);
+			throw err;
+		}
+	},
+);

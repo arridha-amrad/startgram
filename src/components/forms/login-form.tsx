@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import * as m from "@/paraglide/messages";
 import { createServerFn } from "@tanstack/react-start";
 import { Eye, EyeOff, Loader2, RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
@@ -12,7 +11,6 @@ import { loginSchema, type TLoginSchema } from "#/zod-schemas/login-schema";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
-	FieldDescription,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
@@ -20,6 +18,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import * as m from "@/paraglide/messages";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -53,6 +52,8 @@ export function LoginForm({
 	const [isShowResendVerificationBtn, setIsShowResendVerificationBtn] =
 		useState(false);
 
+	const [authError, setAuthError] = useState<string | null>(null);
+
 	const onSubmit = async (data: TLoginSchema) => {
 		try {
 			const { data: resData, error } = data.identifier.includes("@")
@@ -65,13 +66,17 @@ export function LoginForm({
 						password: data.password,
 					});
 
-			if (error?.message) {
-				if (error.code === "EMAIL_NOT_VERIFIED") {
-					setIsShowResendVerificationBtn(true);
-				} else {
-					toast.error(error.message, {
-						duration: 5000,
-					});
+			if (error) {
+				if (error.code) {
+					switch (error.code) {
+						case "INVALID_EMAIL_OR_PASSWORD":
+							setAuthError(m.INVALID_EMAIL_OR_PASSWORD());
+							break;
+						case "EMAIL_NOT_VERIFIED":
+							setAuthError(m.auth_login_page_email_not_verified());
+							setIsShowResendVerificationBtn(true);
+							break;
+					}
 				}
 				return;
 			}
@@ -128,15 +133,17 @@ export function LoginForm({
 				<FieldGroup>
 					<div className="flex flex-col items-center gap-1 text-center">
 						<h1 className="text-2xl font-bold">{m.auth_login_page_title()}</h1>
-						<p className="text-sm text-balance text-muted-foreground">
-							{m.auth_login_page_description()}
+						<p
+							className={cn(
+								"text-sm text-balance",
+								authError ? "text-destructive" : "text-muted-foreground",
+							)}
+						>
+							{authError || m.auth_login_page_description()}
 						</p>
 					</div>
 					{isShowResendVerificationBtn && (
 						<Field className="justify-center">
-							<p className="text-sm text-balance text-destructive text-center">
-								{m.auth_login_page_email_not_verified()}
-							</p>
 							<Button
 								type="button"
 								onClick={resendVerification}
@@ -148,7 +155,9 @@ export function LoginForm({
 						</Field>
 					)}
 					<Field>
-						<FieldLabel htmlFor="identifier">{m.auth_login_page_identifier_label()}</FieldLabel>
+						<FieldLabel htmlFor="identifier">
+							{m.auth_login_page_identifier_label()}
+						</FieldLabel>
 						<Input
 							id="identifier"
 							placeholder={m.auth_login_page_identifier_placeholder()}
@@ -161,7 +170,9 @@ export function LoginForm({
 					</Field>
 					<Field>
 						<div className="flex items-center">
-							<FieldLabel htmlFor="password">{m.auth_login_page_password_label()}</FieldLabel>
+							<FieldLabel htmlFor="password">
+								{m.auth_login_page_password_label()}
+							</FieldLabel>
 							<Link
 								to="/auth/forgot-password"
 								className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -171,6 +182,7 @@ export function LoginForm({
 						</div>
 						<InputGroup>
 							<InputGroupInput
+								id="password"
 								type={isShowPwd ? "text" : "password"}
 								placeholder={m.auth_login_page_password_placeholder()}
 								{...register("password")}

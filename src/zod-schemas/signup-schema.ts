@@ -1,33 +1,34 @@
 import { z } from "zod"
+import * as m from "@/paraglide/messages"
 
 export const pwdSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(/[0-9]/, "Password must contain at least one number")
+  .min(8, m.validation_password_min_8())
+  .regex(/[0-9]/, m.validation_password_number())
   .regex(
     /[^a-zA-Z0-9]/,
-    "Password must contain at least one special character"
+    m.validation_password_special()
   )
 
 export const signupSchema = z
   .object({
-    fullName: z.string().min(2, "Full name must be at least 2 characters long"),
+    fullName: z.string().min(2, m.validation_fullname_min_2()),
 
     username: z
       .string()
-      .min(1, "Username is required")
-      .regex(/^[a-zA-Z0-9]+$/, "Username must be alphanumeric with no spaces"),
+      .min(1, m.validation_username_required())
+      .regex(/^[a-zA-Z0-9]+$/, m.validation_username_alphanumeric()),
     // Note: Uniqueness check happens during form submission/DB query
 
-    email: z.string().email("Invalid email format"),
+    email: z.string().email(m.validation_email_invalid()),
 
     password: pwdSchema,
 
-    avatar: z.file().optional(),
+    avatar: z.any().optional(),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: m.validation_password_mismatch(),
     path: ["confirmPassword"], // Sets the error specifically to the confirmPassword field
   })
 

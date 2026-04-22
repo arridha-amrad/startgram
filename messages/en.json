@@ -1,5 +1,6 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password",
   "common_logout": "Logout",
   "common_docs": "Docs",
   "common_not_found": "not found",
@@ -97,5 +98,13 @@
   "email_resetpwd_subject": "Reset Password",
   "email_resetpwd_body": "Please follow this link to reset your password: {url}",
   "email_verification_subject": "Verify your email",
-  "email_verification_body": "Your verification code is: {otp}"
+  "email_verification_body": "Your verification code is: {otp}",
+  "validation_password_min_8": "Password must be at least 8 characters",
+  "validation_password_number": "Password must contain at least one number",
+  "validation_password_special": "Password must contain at least one special character",
+  "validation_fullname_min_2": "Full name must be at least 2 characters long",
+  "validation_username_required": "Username is required",
+  "validation_username_alphanumeric": "Username must be alphanumeric with no spaces",
+  "validation_email_invalid": "Invalid email format",
+  "validation_password_mismatch": "Passwords do not match"
 }

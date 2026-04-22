@@ -97,5 +97,13 @@
   "email_resetpwd_subject": "Atur Ulang Kata Sandi",
   "email_resetpwd_body": "Silakan ikuti tautan ini untuk mengatur ulang kata sandi Anda: {url}",
   "email_verification_subject": "Verifikasi email Anda",
-  "email_verification_body": "Kode verifikasi Anda adalah: {otp}"
+  "email_verification_body": "Kode verifikasi Anda adalah: {otp}",
+  "validation_password_min_8": "Kata sandi harus minimal 8 karakter",
+  "validation_password_number": "Kata sandi harus mengandung minimal satu angka",
+  "validation_password_special": "Kata sandi harus mengandung minimal satu karakter khusus",
+  "validation_fullname_min_2": "Nama lengkap harus minimal 2 karakter",
+  "validation_username_required": "Username wajib diisi",
+  "validation_username_alphanumeric": "Username harus alfanumerik tanpa spasi",
+  "validation_email_invalid": "Format email tidak valid",
+  "validation_password_mismatch": "Kata sandi tidak cocok"
 }

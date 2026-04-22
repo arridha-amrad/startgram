@@ -51,14 +51,17 @@ export default function AuthFooter() {
 					onValueChange={(l) => setLocale(l as Locale)}
 				>
 					<SelectTrigger className="w-max text-xs">
-						<SelectValue placeholder={m.common_language()} />
+						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						{locales.map((l) => (
-							<SelectItem key={l} value={l}>
-								{langMapper(l)}
-							</SelectItem>
-						))}
+						<SelectGroup>
+							<SelectLabel>{m.common_language()}</SelectLabel>
+							{locales.map((l) => (
+								<SelectItem key={l} value={l}>
+									{langMapper(l)}
+								</SelectItem>
+							))}
+						</SelectGroup>
 					</SelectContent>
 				</Select>
 				<div>

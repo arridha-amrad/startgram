@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Toaster } from "react-hot-toast";
+import { TooltipProvider } from "#/components/ui/tooltip";
 import { getLocale } from "#/paraglide/runtime";
 import * as m from "@/paraglide/messages";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
@@ -59,8 +60,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased">
-				{children}
-				<Toaster position="bottom-left" />
+				<TooltipProvider>
+					{children}
+					<Toaster position="bottom-left" />
+				</TooltipProvider>
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",

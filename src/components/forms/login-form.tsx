@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { Eye, EyeOff, Loader2, RefreshCwIcon } from "lucide-react";
+import { Loader2, RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -9,22 +9,10 @@ import { db } from "#/db";
 import { authClient } from "#/lib/auth-client";
 import { loginSchema, type TLoginSchema } from "#/zod-schemas/login-schema";
 import { Button } from "@/components/ui/button";
-import {
-	Field,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-	FieldSeparator,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import * as m from "@/paraglide/messages";
 import { FormInput } from "../form-input";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from "../ui/input-group";
 
 const findEmailByUsername = createServerFn()
 	.inputValidator((username: string) => username)
@@ -94,8 +82,6 @@ export function LoginForm({
 			console.log(err);
 		}
 	};
-
-	const [isShowPwd, setIsShowPwd] = useState(false);
 
 	const resendVerification = async () => {
 		const id = toast.loading("Sending verification code...");
@@ -176,6 +162,15 @@ export function LoginForm({
 						placeholder="********"
 						type="password"
 					/>
+
+					<div className="text-center text-sm text-muted-foreground">
+						<Link
+							to="/auth/forgot-password"
+							className="ml-auto underline-offset-4 hover:underline"
+						>
+							{m.auth_login_page_forgot_password_link()}
+						</Link>
+					</div>
 
 					<Field>
 						<Button type="submit">

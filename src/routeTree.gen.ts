@@ -9,18 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as Main_viewRouteImport } from './routes/_main_view'
 import { Route as DummyCropperRouteImport } from './routes/dummy/cropper'
 import { Route as AuthVerificationRouteImport } from './routes/auth/verification'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as ApiUsersRouteImport } from './routes/api/users'
+import { Route as Main_viewProtectedRouteImport } from './routes/_main_view/_protected'
+import { Route as Main_viewUsernameRouteImport } from './routes/_main_view/$username'
+import { Route as Main_viewProtectedIndexRouteImport } from './routes/_main_view/_protected/index'
+import { Route as Main_viewUsernameIndexRouteImport } from './routes/_main_view/$username/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as Main_viewProtectedReelsRouteImport } from './routes/_main_view/_protected/reels'
+import { Route as Main_viewProtectedMessagesRouteImport } from './routes/_main_view/_protected/messages'
+import { Route as Main_viewProtectedExploreRouteImport } from './routes/_main_view/_protected/explore'
+import { Route as Main_viewUsernameTaggedRouteImport } from './routes/_main_view/$username/tagged'
+import { Route as Main_viewUsernameSavedRouteImport } from './routes/_main_view/$username/saved'
+import { Route as Main_viewUsernameReelsRouteImport } from './routes/_main_view/$username/reels'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const Main_viewRoute = Main_viewRouteImport.update({
+  id: '/_main_view',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DummyCropperRoute = DummyCropperRouteImport.update({
@@ -53,78 +63,191 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/auth/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiUsersRoute = ApiUsersRouteImport.update({
+  id: '/api/users',
+  path: '/api/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Main_viewProtectedRoute = Main_viewProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => Main_viewRoute,
+} as any)
+const Main_viewUsernameRoute = Main_viewUsernameRouteImport.update({
+  id: '/$username',
+  path: '/$username',
+  getParentRoute: () => Main_viewRoute,
+} as any)
+const Main_viewProtectedIndexRoute = Main_viewProtectedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => Main_viewProtectedRoute,
+} as any)
+const Main_viewUsernameIndexRoute = Main_viewUsernameIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => Main_viewUsernameRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Main_viewProtectedReelsRoute = Main_viewProtectedReelsRouteImport.update({
+  id: '/reels',
+  path: '/reels',
+  getParentRoute: () => Main_viewProtectedRoute,
+} as any)
+const Main_viewProtectedMessagesRoute =
+  Main_viewProtectedMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => Main_viewProtectedRoute,
+  } as any)
+const Main_viewProtectedExploreRoute =
+  Main_viewProtectedExploreRouteImport.update({
+    id: '/explore',
+    path: '/explore',
+    getParentRoute: () => Main_viewProtectedRoute,
+  } as any)
+const Main_viewUsernameTaggedRoute = Main_viewUsernameTaggedRouteImport.update({
+  id: '/tagged',
+  path: '/tagged',
+  getParentRoute: () => Main_viewUsernameRoute,
+} as any)
+const Main_viewUsernameSavedRoute = Main_viewUsernameSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => Main_viewUsernameRoute,
+} as any)
+const Main_viewUsernameReelsRoute = Main_viewUsernameReelsRouteImport.update({
+  id: '/reels',
+  path: '/reels',
+  getParentRoute: () => Main_viewUsernameRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof Main_viewProtectedIndexRoute
+  '/$username': typeof Main_viewUsernameRouteWithChildren
+  '/api/users': typeof ApiUsersRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verification': typeof AuthVerificationRoute
   '/dummy/cropper': typeof DummyCropperRoute
+  '/$username/reels': typeof Main_viewUsernameReelsRoute
+  '/$username/saved': typeof Main_viewUsernameSavedRoute
+  '/$username/tagged': typeof Main_viewUsernameTaggedRoute
+  '/explore': typeof Main_viewProtectedExploreRoute
+  '/messages': typeof Main_viewProtectedMessagesRoute
+  '/reels': typeof Main_viewProtectedReelsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/$username/': typeof Main_viewUsernameIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof Main_viewProtectedIndexRoute
+  '/api/users': typeof ApiUsersRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verification': typeof AuthVerificationRoute
   '/dummy/cropper': typeof DummyCropperRoute
+  '/$username/reels': typeof Main_viewUsernameReelsRoute
+  '/$username/saved': typeof Main_viewUsernameSavedRoute
+  '/$username/tagged': typeof Main_viewUsernameTaggedRoute
+  '/explore': typeof Main_viewProtectedExploreRoute
+  '/messages': typeof Main_viewProtectedMessagesRoute
+  '/reels': typeof Main_viewProtectedReelsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/$username': typeof Main_viewUsernameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_main_view': typeof Main_viewRouteWithChildren
+  '/_main_view/$username': typeof Main_viewUsernameRouteWithChildren
+  '/_main_view/_protected': typeof Main_viewProtectedRouteWithChildren
+  '/api/users': typeof ApiUsersRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verification': typeof AuthVerificationRoute
   '/dummy/cropper': typeof DummyCropperRoute
+  '/_main_view/$username/reels': typeof Main_viewUsernameReelsRoute
+  '/_main_view/$username/saved': typeof Main_viewUsernameSavedRoute
+  '/_main_view/$username/tagged': typeof Main_viewUsernameTaggedRoute
+  '/_main_view/_protected/explore': typeof Main_viewProtectedExploreRoute
+  '/_main_view/_protected/messages': typeof Main_viewProtectedMessagesRoute
+  '/_main_view/_protected/reels': typeof Main_viewProtectedReelsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_main_view/$username/': typeof Main_viewUsernameIndexRoute
+  '/_main_view/_protected/': typeof Main_viewProtectedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$username'
+    | '/api/users'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/reset-password'
     | '/auth/signup'
     | '/auth/verification'
     | '/dummy/cropper'
+    | '/$username/reels'
+    | '/$username/saved'
+    | '/$username/tagged'
+    | '/explore'
+    | '/messages'
+    | '/reels'
     | '/api/auth/$'
+    | '/$username/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/users'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/reset-password'
     | '/auth/signup'
     | '/auth/verification'
     | '/dummy/cropper'
+    | '/$username/reels'
+    | '/$username/saved'
+    | '/$username/tagged'
+    | '/explore'
+    | '/messages'
+    | '/reels'
     | '/api/auth/$'
+    | '/$username'
   id:
     | '__root__'
-    | '/'
+    | '/_main_view'
+    | '/_main_view/$username'
+    | '/_main_view/_protected'
+    | '/api/users'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/reset-password'
     | '/auth/signup'
     | '/auth/verification'
     | '/dummy/cropper'
+    | '/_main_view/$username/reels'
+    | '/_main_view/$username/saved'
+    | '/_main_view/$username/tagged'
+    | '/_main_view/_protected/explore'
+    | '/_main_view/_protected/messages'
+    | '/_main_view/_protected/reels'
     | '/api/auth/$'
+    | '/_main_view/$username/'
+    | '/_main_view/_protected/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  Main_viewRoute: typeof Main_viewRouteWithChildren
+  ApiUsersRoute: typeof ApiUsersRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
@@ -136,11 +259,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_main_view': {
+      id: '/_main_view'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof Main_viewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dummy/cropper': {
@@ -185,6 +308,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/users': {
+      id: '/api/users'
+      path: '/api/users'
+      fullPath: '/api/users'
+      preLoaderRoute: typeof ApiUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_main_view/_protected': {
+      id: '/_main_view/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof Main_viewProtectedRouteImport
+      parentRoute: typeof Main_viewRoute
+    }
+    '/_main_view/$username': {
+      id: '/_main_view/$username'
+      path: '/$username'
+      fullPath: '/$username'
+      preLoaderRoute: typeof Main_viewUsernameRouteImport
+      parentRoute: typeof Main_viewRoute
+    }
+    '/_main_view/_protected/': {
+      id: '/_main_view/_protected/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof Main_viewProtectedIndexRouteImport
+      parentRoute: typeof Main_viewProtectedRoute
+    }
+    '/_main_view/$username/': {
+      id: '/_main_view/$username/'
+      path: '/'
+      fullPath: '/$username/'
+      preLoaderRoute: typeof Main_viewUsernameIndexRouteImport
+      parentRoute: typeof Main_viewUsernameRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -192,11 +350,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main_view/_protected/reels': {
+      id: '/_main_view/_protected/reels'
+      path: '/reels'
+      fullPath: '/reels'
+      preLoaderRoute: typeof Main_viewProtectedReelsRouteImport
+      parentRoute: typeof Main_viewProtectedRoute
+    }
+    '/_main_view/_protected/messages': {
+      id: '/_main_view/_protected/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof Main_viewProtectedMessagesRouteImport
+      parentRoute: typeof Main_viewProtectedRoute
+    }
+    '/_main_view/_protected/explore': {
+      id: '/_main_view/_protected/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof Main_viewProtectedExploreRouteImport
+      parentRoute: typeof Main_viewProtectedRoute
+    }
+    '/_main_view/$username/tagged': {
+      id: '/_main_view/$username/tagged'
+      path: '/tagged'
+      fullPath: '/$username/tagged'
+      preLoaderRoute: typeof Main_viewUsernameTaggedRouteImport
+      parentRoute: typeof Main_viewUsernameRoute
+    }
+    '/_main_view/$username/saved': {
+      id: '/_main_view/$username/saved'
+      path: '/saved'
+      fullPath: '/$username/saved'
+      preLoaderRoute: typeof Main_viewUsernameSavedRouteImport
+      parentRoute: typeof Main_viewUsernameRoute
+    }
+    '/_main_view/$username/reels': {
+      id: '/_main_view/$username/reels'
+      path: '/reels'
+      fullPath: '/$username/reels'
+      preLoaderRoute: typeof Main_viewUsernameReelsRouteImport
+      parentRoute: typeof Main_viewUsernameRoute
+    }
   }
 }
 
+interface Main_viewUsernameRouteChildren {
+  Main_viewUsernameReelsRoute: typeof Main_viewUsernameReelsRoute
+  Main_viewUsernameSavedRoute: typeof Main_viewUsernameSavedRoute
+  Main_viewUsernameTaggedRoute: typeof Main_viewUsernameTaggedRoute
+  Main_viewUsernameIndexRoute: typeof Main_viewUsernameIndexRoute
+}
+
+const Main_viewUsernameRouteChildren: Main_viewUsernameRouteChildren = {
+  Main_viewUsernameReelsRoute: Main_viewUsernameReelsRoute,
+  Main_viewUsernameSavedRoute: Main_viewUsernameSavedRoute,
+  Main_viewUsernameTaggedRoute: Main_viewUsernameTaggedRoute,
+  Main_viewUsernameIndexRoute: Main_viewUsernameIndexRoute,
+}
+
+const Main_viewUsernameRouteWithChildren =
+  Main_viewUsernameRoute._addFileChildren(Main_viewUsernameRouteChildren)
+
+interface Main_viewProtectedRouteChildren {
+  Main_viewProtectedExploreRoute: typeof Main_viewProtectedExploreRoute
+  Main_viewProtectedMessagesRoute: typeof Main_viewProtectedMessagesRoute
+  Main_viewProtectedReelsRoute: typeof Main_viewProtectedReelsRoute
+  Main_viewProtectedIndexRoute: typeof Main_viewProtectedIndexRoute
+}
+
+const Main_viewProtectedRouteChildren: Main_viewProtectedRouteChildren = {
+  Main_viewProtectedExploreRoute: Main_viewProtectedExploreRoute,
+  Main_viewProtectedMessagesRoute: Main_viewProtectedMessagesRoute,
+  Main_viewProtectedReelsRoute: Main_viewProtectedReelsRoute,
+  Main_viewProtectedIndexRoute: Main_viewProtectedIndexRoute,
+}
+
+const Main_viewProtectedRouteWithChildren =
+  Main_viewProtectedRoute._addFileChildren(Main_viewProtectedRouteChildren)
+
+interface Main_viewRouteChildren {
+  Main_viewUsernameRoute: typeof Main_viewUsernameRouteWithChildren
+  Main_viewProtectedRoute: typeof Main_viewProtectedRouteWithChildren
+}
+
+const Main_viewRouteChildren: Main_viewRouteChildren = {
+  Main_viewUsernameRoute: Main_viewUsernameRouteWithChildren,
+  Main_viewProtectedRoute: Main_viewProtectedRouteWithChildren,
+}
+
+const Main_viewRouteWithChildren = Main_viewRoute._addFileChildren(
+  Main_viewRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  Main_viewRoute: Main_viewRouteWithChildren,
+  ApiUsersRoute: ApiUsersRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,

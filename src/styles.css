@@ -47,6 +47,10 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --cursor-big-plus:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 4v24M4 16h24' stroke='black' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M16 4v24M4 16h24' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")
+      16 16,
+    crosshair;
 }
 
 :root {
@@ -121,11 +125,83 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
-    @apply bg-background text-foreground;
-    }
+    @apply font-sans bg-background text-foreground;
+  }
   html {
+    font-family: var(--font-sans);
+    scrollbar-gutter: stable !important;
     @apply font-sans;
-    }
+  }
+  button {
+    @apply cursor-pointer;
+  }
+
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@layer components {
+  .sidebar-item {
+    @apply flex aspect-square items-center justify-center gap-x-4 rounded-md p-2 hover:bg-sidebar-accent lg:aspect-auto lg:justify-start;
+  }
+
+  .tag-box {
+    position: relative;
+  }
+
+  .tag-box::before {
+    content: "";
+    position: absolute;
+    top: -5px; /* Aligns peak to exactly 0px when box is at top-7px */
+    width: 10px;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    transform: rotate(45deg);
+    z-index: -1;
+    /* We don't need clip-path if the bottom half is behind the box */
+    transition: left 0.2s ease-out;
+  }
+
+  .tag-box-center::before {
+    left: 50%;
+    margin-left: -5px; /* Center the 10px wide square before rotation */
+  }
+
+  .tag-box-left::before {
+    left: 15%;
+    margin-left: -0px;
+  }
+
+  .tag-box-right::before {
+    left: 85%;
+    margin-left: -10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: oklch(0.708 0 0 / 0.3);
+    border-radius: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.708 0 0 / 0.5);
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.708 0 0 / 0.3) transparent;
+  }
 }

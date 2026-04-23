@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import * as m from "@/paraglide/messages";
 import SignupForm from "#/components/forms/signup-form";
 import { LogoIcon } from "#/components/icons/logo";
 import AuthFooter from "@/components/footers/auth-footer";
+import * as m from "@/paraglide/messages";
 
 export const Route = createFileRoute("/auth/signup")({
 	component: RouteComponent,

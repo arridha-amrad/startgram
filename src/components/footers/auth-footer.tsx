@@ -1,29 +1,5 @@
-import {
-	getLocale,
-	type Locale,
-	locales,
-	setLocale,
-} from "#/paraglide/runtime";
 import * as m from "@/paraglide/messages";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
-
-const langMapper = (l: string) => {
-	const langs = {
-		en: "English",
-		tr: "Türkçe",
-		id: "Bahasa Indonesia",
-		jp: "日本語",
-	};
-	return langs[l as keyof typeof langs];
-};
+import LanguageSelector from "../language-select";
 
 export default function AuthFooter() {
 	return (
@@ -46,24 +22,7 @@ export default function AuthFooter() {
 				<li>{m.footer_meta_in_country()}</li>
 			</ul>
 			<div className="flex items-center justify-center gap-x-4">
-				<Select
-					defaultValue={getLocale()}
-					onValueChange={(l) => setLocale(l as Locale)}
-				>
-					<SelectTrigger className="w-max text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							<SelectLabel>{m.common_language()}</SelectLabel>
-							{locales.map((l) => (
-								<SelectItem key={l} value={l}>
-									{langMapper(l)}
-								</SelectItem>
-							))}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
+				<LanguageSelector />
 				<div>
 					{m.footer_copyright({
 						year: new Date().getFullYear().toString(),

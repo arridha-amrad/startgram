@@ -11,15 +11,15 @@ import {
 } from "react-hook-form";
 import { cn } from "#/lib/utils";
 import { MAX_CAPTION_LENGTH } from "#/zod-schemas/createpost-schema";
-import Emoji from "../emoji/emoji-btn";
-import { Field, FieldLabel } from "../ui/field";
+import Emoji from "../../emoji/emoji-btn";
+import { Field, FieldLabel } from "../../ui/field";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupText,
 	InputGroupTextarea,
-} from "../ui/input-group";
+} from "../../ui/input-group";
 
 type CaptionTextareaProps<T extends FieldValues> = {
 	getValues: UseFormGetValues<T>;

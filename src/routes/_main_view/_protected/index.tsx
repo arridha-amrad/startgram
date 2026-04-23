@@ -19,17 +19,20 @@ export const Route = createFileRoute("/_main_view/_protected/")({
 
 function RouteComponent() {
 	return (
-		<VolumeProvider>
-			<div className="flex-1 space-y-4 border border-orange-500 p-4">
-				<FeedPost />
-				<VideoPostItem />
-				<VideoPostItem />
-				<FeedPost />
-				<FeedPost />
-			</div>
-			<div className="sticky top-0 hidden h-svh w-xs border border-lime-500 p-4 lg:block">
-				<SuggestedUsers />
-			</div>
-		</VolumeProvider>
+		<div>
+			<h1>Home</h1>
+		</div>
+		// <VolumeProvider>
+		// 	<div className="flex-1 space-y-4 border border-orange-500 p-4">
+		// 		<FeedPost />
+		// 		<VideoPostItem />
+		// 		<VideoPostItem />
+		// 		<FeedPost />
+		// 		<FeedPost />
+		// 	</div>
+		// 	<div className="sticky top-0 hidden h-svh w-xs border border-lime-500 p-4 lg:block">
+		// 		<SuggestedUsers />
+		// 	</div>
+		// </VolumeProvider>
 	);
 }

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
 	ChevronsUpDown,
 	LogOut,
@@ -46,7 +46,7 @@ export const SidebarFooter = () => {
 				</div>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
-				className="ml-4 w-(--radix-dropdown-menu-trigger-width) rounded-md lg:ml-0"
+				className="ml-4 w-[250px] lg:w-(--radix-dropdown-menu-trigger-width) rounded-md lg:ml-0"
 				side="top"
 				align="end"
 				sideOffset={4}
@@ -55,7 +55,7 @@ export const SidebarFooter = () => {
 					<DropdownMenuLabel asChild>
 						<div className="flex w-full cursor-pointer items-center gap-2 rounded-md px-1 py-1.5 text-left text-sm">
 							<Avatar src={data?.user.image ?? undefined} />
-							<div className="hidden w-full flex-1 flex-col text-left text-sm leading-tight lg:block">
+							<div className="w-full flex-1 flex-col text-left text-sm leading-tight">
 								<h1 className="truncate text-sm">{data?.user.username}</h1>
 								<h3 className="truncate text-xs">{data?.user.email}</h3>
 							</div>

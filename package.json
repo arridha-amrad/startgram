@@ -41,7 +41,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.167.22",
-    "better-auth": "^1.6.6",
+    "better-auth": "^1.6.8",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
@@ -89,7 +89,7 @@
     "jsdom": "^29.0.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.9",
+    "vite": "^8.0.10",
     "vitest": "^4.1.5"
   },
   "pnpm": {

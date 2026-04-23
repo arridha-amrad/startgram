@@ -1,12 +1,11 @@
-import { Users } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDebounce } from "use-debounce";
 import type { TCreatePostSchema } from "#/zod-schemas/createpost-schema";
-import { cn } from "@/lib/utils";
 import type { UserMinimal } from "@/types/user.types";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import {
 	Combobox,
 	ComboboxChip,
@@ -18,13 +17,14 @@ import {
 	ComboboxList,
 	ComboboxValue,
 	useComboboxAnchor,
-} from "../ui/combobox";
+} from "../../ui/combobox";
+import { Field, FieldLabel } from "../../ui/field";
 
 type Props = {
 	field: ControllerRenderProps<TCreatePostSchema, "collaborators">;
 };
 
-export default function InputCollaborators({ field }: Props) {
+export default function CollaboratorsInput({ field }: Props) {
 	const [users, setUsers] = useState<Array<UserMinimal>>([]);
 
 	const anchor = useComboboxAnchor();
@@ -39,6 +39,8 @@ export default function InputCollaborators({ field }: Props) {
 	const [query, setQuery] = useState("");
 	const [debouncedQuery] = useDebounce(query, 500);
 
+	const [isLoading, setIsLoading] = useState(false);
+
 	useEffect(() => {
 		const fetchUsers = async () => {
 			const res = await fetch("/api/users");
@@ -47,20 +49,23 @@ export default function InputCollaborators({ field }: Props) {
 		};
 
 		const t = setTimeout(() => {
-			if (debouncedQuery.trim() === "") {
-				setUsers([]);
-				return;
+			if (debouncedQuery.trim() !== "") {
+				setIsLoading(true);
+				fetchUsers()
+					.then((data: Array<UserMinimal>) => {
+						const filteredUsers = data.filter(
+							(user) =>
+								!collaborators.some((u: UserMinimal) => u.id === user.id),
+						);
+						setUsers(filteredUsers);
+					})
+					.catch((err) => {
+						toast.error(err instanceof Error ? err.message : "Error");
+					})
+					.finally(() => {
+						setIsLoading(false);
+					});
 			}
-			fetchUsers()
-				.then((data: Array<UserMinimal>) => {
-					const filteredUsers = data.filter(
-						(user) => !collaborators.some((u: UserMinimal) => u.id === user.id),
-					);
-					setUsers(filteredUsers);
-				})
-				.catch((err) => {
-					toast.error(err instanceof Error ? err.message : "Error");
-				});
 		}, 0);
 
 		return () => clearTimeout(t);
@@ -74,41 +79,35 @@ export default function InputCollaborators({ field }: Props) {
 			onValueChange={(value) => {
 				field.onChange(value);
 				setQuery("");
+				setUsers((prev) =>
+					prev.filter((user) => !value.some((u) => u.id === user.id)),
+				);
 			}}
 		>
-			<ComboboxChips ref={anchor} className="w-full">
-				<ComboboxValue>
-					{(values: Array<UserMinimal>) => (
-						<>
-							<Users
-								className={cn(
-									"size-4 text-muted-foreground",
-									values.length === 0 ? "" : "ml-2",
-								)}
-							/>
-							{values.length === 0 && (
-								<button
-									type="button"
-									onClick={() => inputRef.current?.focus()}
-									className="ml-1 inline text-sm text-muted-foreground cursor-pointer"
-								>
-									Add Collaborators
-								</button>
-							)}
-							{values.map((value: UserMinimal) => (
-								<ComboboxChip key={value.id}>{value.username}</ComboboxChip>
-							))}
-							<ComboboxChipsInput
-								value={query}
-								onChange={(e) => setQuery(e.target.value)}
-								ref={inputRef}
-							/>
-						</>
-					)}
-				</ComboboxValue>
-			</ComboboxChips>
+			<Field>
+				<FieldLabel>Collaborators</FieldLabel>
+				<ComboboxChips ref={anchor} className="w-full">
+					<ComboboxValue>
+						{(values: Array<UserMinimal>) => (
+							<>
+								{values.map((value: UserMinimal) => (
+									<ComboboxChip key={value.id}>{value.username}</ComboboxChip>
+								))}
+								<ComboboxChipsInput
+									value={query}
+									onChange={(e) => setQuery(e.target.value)}
+									ref={inputRef}
+									placeholder="Add collaborators..."
+								/>
+							</>
+						)}
+					</ComboboxValue>
+				</ComboboxChips>
+			</Field>
 			<ComboboxContent anchor={anchor} className={"z-999"}>
-				<ComboboxEmpty>No items found.</ComboboxEmpty>
+				<ComboboxEmpty>
+					{isLoading ? <Loader className="animate-spin" /> : "No items found."}
+				</ComboboxEmpty>
 				<ComboboxList>
 					{(item: UserMinimal) => (
 						<ComboboxItem

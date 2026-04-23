@@ -1,7 +1,7 @@
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -31,12 +31,20 @@ export function CreatePostDialog({ children }: Props) {
 		step,
 		mediaWithTaggedUsers,
 		aspectRatio,
+		reset,
 	} = useCreatePost();
 	const [showConfirm, setShowConfirm] = useState(false);
 
 	const triggerSubmit = () => {
 		formRef.current?.requestSubmit();
 	};
+
+	useEffect(() => {
+		if (open && step === Steps.Submitted) {
+			setOpen(false);
+			reset();
+		}
+	}, [open, step, reset]);
 
 	const handleCloseAttempt = () => {
 		setShowConfirm(true);
@@ -55,6 +63,12 @@ export function CreatePostDialog({ children }: Props) {
 			>
 				<DialogTrigger asChild>{children}</DialogTrigger>
 				<DialogContent
+					onPointerDownOutside={(e) => {
+						if (step === Steps.Submitting) e.preventDefault();
+					}}
+					onEscapeKeyDown={(e) => {
+						if (step === Steps.Submitting) e.preventDefault();
+					}}
 					showCloseButton={false}
 					className="flex w-max flex-col gap-0 overflow-hidden p-0 ring-2 ring-muted sm:max-w-full"
 				>
@@ -76,12 +90,15 @@ export function CreatePostDialog({ children }: Props) {
 								<h1 className="font-semibold">Create new post</h1>
 								<div>
 									{step >= Steps.Picker && mediaWithTaggedUsers.length > 0 ? (
-										step === Steps.MakeCaption ? (
+										step >= Steps.MakeCaption ? (
 											<Button
 												variant="ghost"
 												onClick={triggerSubmit}
 												type="button"
 											>
+												{step === Steps.Submitting && (
+													<Loader className="animate-spin" />
+												)}
 												Share
 											</Button>
 										) : (

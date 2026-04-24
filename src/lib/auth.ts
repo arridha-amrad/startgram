@@ -2,8 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, username } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
+import * as schema from "#/db/tables";
 import { db } from "@/db";
-import * as schema from "@/db/schema";
 import * as m from "@/paraglide/messages";
 import { sendEmail } from "./mailer";
 

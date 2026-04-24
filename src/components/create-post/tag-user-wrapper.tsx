@@ -67,6 +67,8 @@ export default function TagUserWrapper({
 			x = Math.max(0, Math.min(100, x));
 			y = Math.max(0, Math.min(100, y));
 
+			console.log({x, y});
+
 			setCoordinate({ x, y });
 		},
 		[containerRef, setCoordinate],

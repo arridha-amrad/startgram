@@ -1,3 +1,4 @@
+import { RectangleVertical, Square } from "lucide-react";
 import type {
 	Dispatch,
 	PropsWithChildren,
@@ -5,8 +6,15 @@ import type {
 	SetStateAction,
 } from "react";
 import { createContext, useContext, useRef, useState } from "react";
+import { aspectRatios } from "@/db/enum";
 
-export type AspectRatio = "1 / 1" | "4 / 5";
+export type AspectRatio = (typeof aspectRatios)[number];
+
+export const availableRatio = [
+	{ value: "1 / 1" as AspectRatio, icon: Square },
+	{ value: "4 / 5" as AspectRatio, icon: RectangleVertical },
+	{ value: "16 / 9" as AspectRatio, icon: RectangleVertical },
+];
 
 export enum Steps {
 	Picker,
@@ -28,6 +36,7 @@ export type TaggedUser = {
 export type MediaType = "image" | "video";
 
 export type MediaWithTaggedUsers = {
+	order: number;
 	src: string;
 	file: File;
 	taggedUsers: Array<TaggedUser>;
@@ -94,12 +103,13 @@ export const CreatePostContextProvider = ({ children }: PropsWithChildren) => {
 		newData: Array<{ src: string; file: File; type: MediaType }>,
 	) => {
 		setMediaWithTaggedUsers((data) => [
-			...data,
-			...newData.map((v) => ({
+			...data, // 4
+			...newData.map((v, i) => ({
 				src: v.src,
 				file: v.file,
 				type: v.type,
 				taggedUsers: [],
+				order: i + data.length - 1,
 			})),
 		]);
 	};
@@ -108,11 +118,12 @@ export const CreatePostContextProvider = ({ children }: PropsWithChildren) => {
 		newData: Array<{ src: string; file: File; type: MediaType }>,
 	) => {
 		setMediaWithTaggedUsers(
-			newData.map((v) => ({
+			newData.map((v, i) => ({
 				src: v.src,
 				type: v.type,
 				taggedUsers: [],
 				file: v.file,
+				order: i
 			})),
 		);
 	};

@@ -1,7 +1,7 @@
+import { env } from "#/env";
 import { createClientOnlyFn, createServerFn } from "@tanstack/react-start";
 import { v2 as cloudinary } from "cloudinary";
 import z from "zod";
-import { env } from "#/env";
 
 interface CloudinaryUploadResult {
 	secure_url: string;
@@ -14,6 +14,7 @@ export const transformations = {
 
 export const folders = {
 	avatar: "startgram/avatars",
+	post: "startgram/posts",
 };
 
 const initCloudinary = () => {
@@ -77,7 +78,6 @@ export const getSignatureFn = createServerFn({ method: "GET" })
 			{
 				timestamp: timestamp,
 				folder: folderName,
-				transformation: transformations.avatar,
 			},
 			env.CLOUDINARY_SECRET,
 		);
@@ -106,12 +106,9 @@ export const uploadToCloudinary = createClientOnlyFn(
 			formData.append("signature", signature);
 			formData.append("timestamp", timestamp.toString());
 			formData.append("folder", options.folder);
-			if (options.transformation) {
-				formData.append("transformation", options.transformation);
-			}
 
 			const response = await fetch(
-				`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+				`https://api.cloudinary.com/v1_1/${cloudName}/${file.type.startsWith("image") ? "image" : "video"}/upload`,
 				{
 					method: "POST",
 					body: formData,

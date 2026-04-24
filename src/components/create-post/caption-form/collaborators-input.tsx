@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDebounce } from "use-debounce";
-import type { TCreatePostSchema } from "#/zod-schemas/createpost-schema";
 import type { UserMinimal } from "@/types/user.types";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import {
@@ -19,9 +18,10 @@ import {
 	useComboboxAnchor,
 } from "../../ui/combobox";
 import { Field, FieldLabel } from "../../ui/field";
+import type { TCreatePostFormSchema } from "#/zod-schemas/createpost-schema";
 
 type Props = {
-	field: ControllerRenderProps<TCreatePostSchema, "collaborators">;
+	field: ControllerRenderProps<TCreatePostFormSchema, "collaborators">;
 };
 
 export default function CollaboratorsInput({ field }: Props) {

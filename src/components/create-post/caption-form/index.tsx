@@ -1,18 +1,21 @@
+import { folders, uploadToCloudinary } from "#/lib/cloudinary.functions";
+import {
+	createPostFormSchema,
+	MAX_CAPTION_LENGTH,
+	type TCreatePostFormSchema
+} from "#/zod-schemas/createpost-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import {
-	createPostSchema,
-	MAX_CAPTION_LENGTH,
-	type TCreatePostSchema,
-} from "#/zod-schemas/createpost-schema";
 import { FieldGroup } from "../../ui/field";
 import Accessibility from "../accessibility";
 import AdvanceSettings from "../advance-settings";
-import { Steps, useCreatePost } from "../create-post-context";
+import { Steps, useCreatePost, type MediaWithTaggedUsers } from "../create-post-context";
 import ShareTo from "../share-to";
 import CaptionTextarea from "./caption-textarea";
 import CollaboratorsInput from "./collaborators-input";
 import LocationInput from "./location-input";
+import { createPost } from "#/server-fn/create-post";
+import toast from "react-hot-toast";
 
 export default function FormCaption() {
 	const { formRef, mediaWithTaggedUsers, aspectRatio, setStep } =
@@ -25,17 +28,41 @@ export default function FormCaption() {
 		getValues,
 		formState: { errors },
 		register,
-	} = useForm<TCreatePostSchema>({
-		resolver: zodResolver(createPostSchema),
+	} = useForm<TCreatePostFormSchema>({
+		resolver: zodResolver(createPostFormSchema),
 	});
 
 	const caption = useWatch({ control, name: "caption" }) || "";
 
-	const onSubmit = async (data: TCreatePostSchema) => {
-		try {
+	const onSubmit = async (data: TCreatePostFormSchema) => {
+		try {									
 			setStep(Steps.Submitting);
-			await new Promise((res) => setTimeout(res, 3000));
-			console.log({ ...data, aspectRatio, media: mediaWithTaggedUsers });
+			// upload the image
+			const promises = mediaWithTaggedUsers.map(async (m) => {
+				const { secure_url } = await uploadToCloudinary(m.file, {
+					folder: folders.post,
+				});
+				const newMedia: Omit<MediaWithTaggedUsers, "file"> = {
+					src: secure_url,
+					taggedUsers: m.taggedUsers,
+					type: m.type,
+					order: m.order
+				}
+				return newMedia;
+			});
+			const media = await Promise.all(promises);
+
+			await createPost({
+				data: {
+					caption: data.caption,
+					location: data.location,
+					collaborators: data.collaborators,
+					media,
+					aspectRatio,
+				}
+			});
+
+			toast.success("Post created successfully");
 			setStep(Steps.Submitted);
 		} catch (err) {
 			console.log(err);

@@ -19,6 +19,8 @@ import {
 } from "../../ui/combobox";
 import { Field, FieldLabel } from "../../ui/field";
 import type { TCreatePostFormSchema } from "#/zod-schemas/createpost-schema";
+import { useServerFn } from "@tanstack/react-start";
+import { searchUser } from "#/server-fn/search-user";
 
 type Props = {
 	field: ControllerRenderProps<TCreatePostFormSchema, "collaborators">;
@@ -41,17 +43,13 @@ export default function CollaboratorsInput({ field }: Props) {
 
 	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
-		const fetchUsers = async () => {
-			const res = await fetch("/api/users");
-			const data = await res.json();
-			return data.users as Array<UserMinimal>;
-		};
+	const search = useServerFn(searchUser)
 
+	useEffect(() => {
 		const t = setTimeout(() => {
 			if (debouncedQuery.trim() !== "") {
 				setIsLoading(true);
-				fetchUsers()
+				search({data: {limit: 5, query: debouncedQuery}})
 					.then((data: Array<UserMinimal>) => {
 						const filteredUsers = data.filter(
 							(user) =>

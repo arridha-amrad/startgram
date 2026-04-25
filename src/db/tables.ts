@@ -1,4 +1,4 @@
-import { boolean, foreignKey, index, integer, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { boolean, doublePrecision, foreignKey, index, integer, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import { aspectRatioEnum, mediaTypeEnum } from "./enum";
 
 export const users = pgTable("users", {
@@ -12,7 +12,7 @@ export const users = pgTable("users", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  username: text("username").unique(),
+  username: text("username").unique().notNull(),
   displayUsername: text("display_username"),
 });
 
@@ -135,8 +135,8 @@ export const taggedUsers = pgTable('tagged_users', {
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  coordinateX: integer('coordinate_x').notNull(),
-  coordinateY: integer('coordinate_y').notNull(),
+  coordinateX: doublePrecision('coordinate_x').notNull(),
+  coordinateY: doublePrecision('coordinate_y').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow()
 })
 

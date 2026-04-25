@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useState } from "react"
-import useEmblaCarousel from "embla-carousel-react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import type { EmblaCarouselType } from "embla-carousel"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { EmblaCarouselType } from "embla-carousel";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type Props = {
-  aspectRatio: string
-  url: Array<string>
-  children: React.ReactNode
-  isLocked?: boolean
-  isDragEnabled?: boolean
-}
+  aspectRatio: string;
+  url: Array<string>;
+  children: React.ReactNode;
+  isLocked?: boolean;
+  isDragEnabled?: boolean;
+};
 
 export default function EmblaProvider({
   aspectRatio,
@@ -20,50 +20,46 @@ export default function EmblaProvider({
   isLocked = false,
   isDragEnabled = true,
 }: Props) {
-  // const providerContainerRef = useRef<HTMLDivElement>(null);
-
-  // useImperativeHandle(ref, () => providerContainerRef.current!);
-
   const [emblaRef, emblaApi] = useEmblaCarousel({
     watchDrag: true,
-  })
+  });
 
-  const [scrollSnaps, setScrollSnaps] = useState<Array<number>>([])
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [scrollSnaps, setScrollSnaps] = useState<Array<number>>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const onInit = useCallback((api: EmblaCarouselType) => {
-    setScrollSnaps(api.scrollSnapList())
-  }, [])
+    setScrollSnaps(api.scrollSnapList());
+  }, []);
 
   const onSelect = useCallback((api: EmblaCarouselType) => {
-    setSelectedIndex(api.selectedScrollSnap())
-  }, [])
+    setSelectedIndex(api.selectedScrollSnap());
+  }, []);
 
   // Gunakan reInit untuk merubah opsi secara dinamis
   useEffect(() => {
     if (emblaApi) {
-      emblaApi.reInit({ watchDrag: !isLocked && isDragEnabled })
+      emblaApi.reInit({ watchDrag: !isLocked && isDragEnabled });
     }
-  }, [emblaApi, isLocked, isDragEnabled])
+  }, [emblaApi, isLocked, isDragEnabled]);
 
   useEffect(() => {
-    if (!emblaApi) return
+    if (!emblaApi) return;
 
     const t = setTimeout(() => {
-      onInit(emblaApi)
-      onSelect(emblaApi)
-    }, 0)
+      onInit(emblaApi);
+      onSelect(emblaApi);
+    }, 0);
 
-    emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect)
+    emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect);
 
     return () => {
-      clearTimeout(t)
+      clearTimeout(t);
       emblaApi
         .off("reInit", onInit)
         .off("reInit", onSelect)
-        .off("select", onSelect)
-    }
-  }, [emblaApi, onInit, onSelect])
+        .off("select", onSelect);
+    };
+  }, [emblaApi, onInit, onSelect]);
 
   return (
     <div className="group relative w-full">
@@ -108,5 +104,5 @@ export default function EmblaProvider({
         </>
       )}
     </div>
-  )
+  );
 }

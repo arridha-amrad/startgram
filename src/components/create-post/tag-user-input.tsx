@@ -1,9 +1,4 @@
-import { Button } from "@base-ui/react";
-import { Loader2, Search, XIcon } from "lucide-react";
-import type { Dispatch, RefObject, SetStateAction } from "react";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { useDebounce } from "use-debounce";
+import { searchUser } from "#/server-fn/search-user";
 import {
 	Command,
 	CommandGroup,
@@ -16,6 +11,13 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import type { UserMinimal } from "@/types/user.types";
+import { Button } from "@base-ui/react";
+import { useServerFn } from "@tanstack/react-start";
+import { Loader2, Search, XIcon } from "lucide-react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useDebounce } from "use-debounce";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
 	InputGroup,
@@ -42,15 +44,6 @@ type Props = {
 	imageOrder: number;
 };
 
-const fetchUsers = async () => {
-	const res = await fetch("/api/users");
-	if (!res.ok) {
-		console.log("Error");
-		return [];
-	}
-	const data = await res.json();
-	return data.users as Array<UserMinimal>;
-};
 
 export default function TagUserInput({
 	emblaRefs,
@@ -71,6 +64,8 @@ export default function TagUserInput({
 
 	const closeRef = useRef<HTMLButtonElement | null>(null);
 
+	const search = useServerFn(searchUser)
+
 	// Fetch Logic
 	useEffect(() => {
 		const t = setTimeout(() => {
@@ -80,7 +75,7 @@ export default function TagUserInput({
 				return;
 			}
 			setIsLoading(true);
-			fetchUsers()
+			search({data: {limit: 5, query: debouncedQuery}})
 				.then((data: Array<UserMinimal>) => {
 					const filteredUsers = data.filter(
 						(user) =>
@@ -123,7 +118,7 @@ export default function TagUserInput({
 								onChange={(e) => setQuery(e.target.value)}
 								placeholder="Tag person..."
 								onMouseDown={(e) => e.stopPropagation()}
-								className="w-40 text-sm outline-none placeholder:text-foreground/50"
+								className="w-40 text-sm outline-none ring-0 placeholder:text-foreground/50"
 							/>
 							<InputGroupAddon>
 								{isLoading ? <Loader2 className="animate-spin" /> : <Search />}

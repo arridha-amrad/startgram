@@ -1,3 +1,20 @@
+import {
+	Combobox,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxInput,
+	ComboboxItem,
+	ComboboxList,
+} from "#/components/ui/combobox";
+import { Field, FieldError, FieldLabel } from "#/components/ui/field";
+import {
+	Item,
+	ItemContent,
+	ItemDescription,
+	ItemMedia,
+	ItemTitle,
+} from "#/components/ui/item";
+import { type Location, queryLocations } from "#/lib/location-fn";
 import { Loader, MapPin } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import type {
@@ -8,24 +25,6 @@ import type {
 } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDebounce } from "use-debounce";
-import {
-	Combobox,
-	ComboboxContent,
-	ComboboxEmpty,
-	ComboboxInput,
-	ComboboxItem,
-	ComboboxList,
-} from "#/components/ui/combobox";
-import { Field, FieldError, FieldLabel } from "#/components/ui/field";
-import { InputGroupAddon } from "#/components/ui/input-group";
-import {
-	Item,
-	ItemContent,
-	ItemDescription,
-	ItemMedia,
-	ItemTitle,
-} from "#/components/ui/item";
-import { type Location, queryLocations } from "#/lib/location-fn";
 
 type LocationInputProps<T extends FieldValues> = {
 	name: Path<T>;
@@ -72,16 +71,13 @@ export default function LocationInput<T extends FieldValues>({
 					placeholder="Search location..."
 					className="w-full"
 				>
-					{isLoading && (
-						<InputGroupAddon align="inline-end">
-							<Loader className="animate-spin" />
-						</InputGroupAddon>
-					)}
 				</ComboboxInput>
 				{error && <FieldError errors={[{ message: error }]} />}
 			</Field>
 			<ComboboxContent className="z-999 min-w-(--anchor-width)">
-				{locationsResult.length > 0 ? (
+					<ComboboxEmpty>
+						{isLoading ? <Loader className="animate-spin" /> : "No items found."}
+					</ComboboxEmpty>
 					<ComboboxList className="pointer-events-auto cursor-pointer">
 						{(item: Location) => (
 							<ComboboxItem
@@ -111,10 +107,7 @@ export default function LocationInput<T extends FieldValues>({
 								</Item>
 							</ComboboxItem>
 						)}
-					</ComboboxList>
-				) : (
-					<ComboboxEmpty>No items found.</ComboboxEmpty>
-				)}
+					</ComboboxList>			
 			</ComboboxContent>
 		</Combobox>
 	);

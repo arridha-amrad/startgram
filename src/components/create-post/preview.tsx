@@ -31,9 +31,9 @@ export default function Preview() {
 		let y = 50;
 
 		if ("clientX" in e) {
-			// Hitung posisi klik dalam persen
-			x = ((e.clientX - rect.left) / rect.width) * 100;
-			y = ((e.clientY - rect.top) / rect.height) * 100;
+			// Hitung posisi klik dalam persen dan bulatkan ke 2 desimal
+			x = Number((((e.clientX - rect.left) / rect.width) * 100).toFixed(2));
+			y = Number((((e.clientY - rect.top) / rect.height) * 100).toFixed(2));
 		}
 
 		setIsShowTagUserInput(true);

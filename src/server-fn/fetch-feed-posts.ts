@@ -3,6 +3,8 @@ import { getSessionMiddleware } from "#/lib/auth.functions";
 import { createServerFn } from "@tanstack/react-start";
 import { sql, type AnyColumn } from "drizzle-orm";
 
+const LIMIT = 5
+
 export function countPostTotalLikes(postId: AnyColumn) {
   return sql<number>`(
     SELECT CAST(COUNT(*) as integer)
@@ -33,7 +35,7 @@ export const fetchFeedPostsServerFn = createServerFn({ method: "GET" })
 
 const fetchFeedPosts = async ({ authUserId }: { authUserId?: string }) => {
   const posts = await db.query.posts.findMany({
-    limit: 1,
+    limit: LIMIT,
     orderBy: (posts, { desc }) => [desc(posts.createdAt)],
     extras: {
       totalLikes: ({ id }) => countPostTotalLikes(id),

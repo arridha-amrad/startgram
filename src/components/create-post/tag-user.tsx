@@ -16,15 +16,17 @@ export function TaggedUserItem({
 	taggedUser,
 	imageOrder,
 }: ItemProps) {
+	const { removeFromTaggedUsers, updateTaggedUserCoordinate } = useCreatePost();
 	const [c, setC] = useState(taggedUser.coordinate);
-
-	const { removeFromTaggedUsers } = useCreatePost();
 
 	return (
 		<TagUserWrapper
 			containerRef={containerRef}
 			coordinate={c}
 			setCoordinate={setC}
+			onDragEnd={(coord) =>
+				updateTaggedUserCoordinate(taggedUser.id, coord, imageOrder)
+			}
 		>
 			<div className="flex items-center gap-x-2 p-2">
 				<div className="w-max max-w-32 pl-1 text-sm text-foreground">

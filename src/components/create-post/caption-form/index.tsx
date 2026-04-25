@@ -1,4 +1,8 @@
-import { folders, uploadToCloudinary } from "#/lib/cloudinary.functions";
+import {
+  folders,
+  transformations,
+  uploadToCloudinary,
+} from "#/lib/cloudinary.functions";
 import {
   createPostFormSchema,
   type TCreatePostFormSchema,
@@ -42,6 +46,7 @@ export default function FormCaption() {
       const promises = mediaWithTaggedUsers.map(async (m) => {
         const { secure_url } = await uploadToCloudinary(m.file, {
           folder: folders.post,
+          transformation: transformations.qauto,
         });
         const newMedia: Omit<MediaWithTaggedUsers, "file"> = {
           src: secure_url,

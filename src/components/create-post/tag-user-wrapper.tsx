@@ -15,17 +15,25 @@ type Props = {
     x: number;
     y: number;
   };
+  onDragEnd?: (coordinate: { x: number; y: number }) => void;
 };
 
 export default function TagUserWrapper({
   containerRef,
   setCoordinate,
   coordinate,
+  onDragEnd,
   children,
 }: Props & PropsWithChildren) {
   const [isDragging, setIsDragging] = useState(false);
 
   const dragOffset = useRef({ x: 0, y: 0 });
+  const latestCoordinate = useRef(coordinate);
+
+  // Update ref whenever coordinate prop changes
+  useEffect(() => {
+    latestCoordinate.current = coordinate;
+  }, [coordinate]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     // Stop propagation to prevent image click handler from firing
@@ -63,13 +71,13 @@ export default function TagUserWrapper({
       let x = ((clientX - rect.left - dragOffset.current.x) / rect.width) * 100;
       let y = ((clientY - rect.top - dragOffset.current.y) / rect.height) * 100;
 
-      // Batasi agar tidak keluar gambar (0% - 100%)
-      x = Math.max(0, Math.min(100, x));
-      y = Math.max(0, Math.min(100, y));
+      // Batasi agar tidak keluar gambar (0% - 100%) dan bulatkan ke 2 desimal
+      const finalX = Math.max(0, Math.min(100, Number(x.toFixed(2))));
+      const finalY = Math.max(0, Math.min(100, Number(y.toFixed(2))));
 
-      console.log({ x, y });
+      console.log({ x: finalX, y: finalY });
 
-      setCoordinate({ x, y });
+      setCoordinate({ x: finalX, y: finalY });
     },
     [containerRef, setCoordinate],
   );
@@ -83,6 +91,7 @@ export default function TagUserWrapper({
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      onDragEnd?.(latestCoordinate.current);
     };
 
     if (isDragging) {

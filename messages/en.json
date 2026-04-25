@@ -69,6 +69,7 @@
   "auth_reset_password_confirm_password_label": "Confirm Password",
   "auth_reset_password_token_not_found": "Token not found",
   "auth_reset_password_success_message": "Password reset successfully",
+  "auth_verification_page_title": "Verification",
   "auth_verification_title": "Verify your email",
   "auth_verification_sent_to": "An email has been sent to {email}. Please check to get the otp code.",
   "auth_verification_otp_label": "Verification code",
